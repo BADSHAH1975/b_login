@@ -1,4 +1,7 @@
+import 'package:b_sell/popup_screens.dart/mobile_otp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MobileNumber extends StatefulWidget {
   const MobileNumber({super.key});
@@ -8,13 +11,43 @@ class MobileNumber extends StatefulWidget {
 }
 
 class _MobileNumberState extends State<MobileNumber> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  bool loading = false;
   bool isSignupScreen = false;
   get labelText => null;
   TextEditingController phonenumber = TextEditingController();
+  String _verificationId = '';
+  String _inputValue = '';
+
   @override
   void dispose() {
     phonenumber.dispose();
     super.dispose();
+  }
+
+  Future<void> verifyPhoneNumber(String phnumber) async {
+    await _auth.verifyPhoneNumber(
+      phoneNumber: "+91$phnumber",
+      verificationCompleted: (PhoneAuthCredential credential) {
+        _auth.signInWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          print('The provided phone number is not valid.');
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        setState(() {
+          _verificationId = verificationId;
+        });
+        Navigator.push(context, MaterialPageRoute(builder: (_) => MobileOtp(otp: _verificationId)));
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        setState(() {
+          _verificationId = verificationId;
+        });
+      },
+    );
   }
 
   @override
@@ -47,10 +80,7 @@ class _MobileNumberState extends State<MobileNumber> {
                           onTap: () {
                             setState(() {
                               Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          super.widget));
+                                  context, MaterialPageRoute(builder: (BuildContext context) => super.widget));
                             });
                           },
                           child: Icon(
@@ -75,20 +105,17 @@ class _MobileNumberState extends State<MobileNumber> {
             child: AnimatedContainer(
               duration: const Duration(microseconds: 700),
               curve: Curves.bounceInOut,
-              height: isSignupScreen ? 380 : 250,
+              height: isSignupScreen ? 380 : 170,
               padding: const EdgeInsets.all(20),
               width: MediaQuery.of(context).size.width - 40,
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withOpacity(0.3),
-                      blurRadius: 15,
-                      spreadRadius: 5,
-                    ),
-                  ]),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), boxShadow: [
+                BoxShadow(
+                  color: Colors.blue.withOpacity(0.3),
+                  blurRadius: 15,
+                  spreadRadius: 5,
+                ),
+              ]),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -105,10 +132,7 @@ class _MobileNumberState extends State<MobileNumber> {
                             children: [
                               const Text(
                                 "Mobile Number",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
+                                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black),
                               ),
                               Container(
                                 margin: const EdgeInsets.only(top: 3),
@@ -119,64 +143,8 @@ class _MobileNumberState extends State<MobileNumber> {
                             ],
                           ),
                         ),
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     setState(() {
-                        //       isSignupScreen = true;
-                        //     });
-                        //   },
-                        // child:
-                        // Column(
-                        //   children: [
-                        //     Text(
-                        //       "Pan Number",
-                        //       style: TextStyle(
-                        //           fontSize: 12,
-                        //           fontWeight: FontWeight.bold,
-                        //           color: isSignupScreen
-                        //               ? Colors.black
-                        //               : Colors.black12),
-                        //     ),
-                        //     if (isSignupScreen)
-                        //         Container(
-                        //           margin: EdgeInsets.only(top: 3),
-                        //           height: 2,
-                        //           width: 100,
-                        //           color: Colors.indigo,
-                        //         )
-                        //     ],
-                        //   ),
-                        // ),
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     setState(() {
-                        //       isSignupScreen = true;
-                        //     });
-                        //   },
-                        // child: Column(
-                        //   children: [
-                        //     Text(
-                        //       "Adhar Number",
-                        //       style: TextStyle(
-                        //           fontSize: 12,
-                        //           fontWeight: FontWeight.bold,
-                        //           color: isSignupScreen
-                        //               ? Colors.black
-                        //               : Colors.black12),
-                        //     ),
-                        //     if (isSignupScreen)
-                        //       Container(
-                        //         margin: EdgeInsets.only(top: 3),
-                        //         height: 2,
-                        //         width: 100,
-                        //         color: Colors.indigo,
-                        //       )
-                        //   ],
-                        // ),
-                        // ),
                       ],
                     ),
-                    // if (isSignupScreen) buildSignupSection(),
                     if (!isSignupScreen) buildSigninSection(),
                   ],
                 ),
@@ -185,19 +153,6 @@ class _MobileNumberState extends State<MobileNumber> {
           ),
           //submit button
           buildBottomHalfContainerPositioned(false, phonenumber.text),
-          // Positioned(.
-          //     top: MediaQuery.of(context).size.height - 220,
-          //     left: 0,
-          //     right: 0,
-          //     child: Column(
-          //       children: [
-          //         Text(
-          //           "Available On",
-          //           style: TextStyle(fontFamily: "Cinzel"),
-          //         ),
-          //         Image.asset("images/stores.png")
-          //       ],
-          //     ))
         ],
       ),
     );
@@ -208,33 +163,7 @@ class _MobileNumberState extends State<MobileNumber> {
       margin: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          // buildTextField(Icons.manage_accounts, "NAME", false, true),
-          buildTextField(Icons.mobile_friendly, "Mobile Number", false, true,
-              phonecontroler: phonenumber),
-          Container(
-            width: 270,
-            margin: const EdgeInsets.only(top: 20),
-            child: RichText(
-              textAlign: TextAlign.center,
-              text: const TextSpan(
-                  text: "By pressing 'Submit' You agree to our\n",
-                  style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 15,
-                  ),
-                  children: [
-                    WidgetSpan(child: SizedBox(height: 30)),
-                    TextSpan(
-                      text: "Term & Conditions",
-                      style: TextStyle(
-                        color: Colors.orange,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    )
-                  ]),
-            ),
-          )
+          buildTextField(Icons.mobile_friendly, "Mobile Number", false, true, phonecontroler: phonenumber),
         ],
       ),
     );
@@ -245,89 +174,73 @@ class _MobileNumberState extends State<MobileNumber> {
       margin: const EdgeInsets.only(top: 20),
       child: Column(
         children: [
-          buildTextField(Icons.mobile_friendly, "Mobile Number", false, true,
-              phonecontroler: phonenumber),
-          // buildTextField(Icons.manage_accounts, "Name", false, false),
-          //buildTextField(Icons.credit_score, "Pan Number", true, false),
-          // Container(
-          //   width: 270,
-          //   margin: EdgeInsets.only(top: 20),
-          // )
+          buildTextField(Icons.mobile_friendly, "Mobile Number", false, true, phonecontroler: phonenumber),
         ],
       ),
     );
   }
 
   // SUBMIT BUTTON
-  Widget buildBottomHalfContainerPositioned(
-      bool showShadow, String phonenumber) {
+  Widget buildBottomHalfContainerPositioned(bool showShadow, String phonenumber) {
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 700),
       curve: Curves.bounceInOut,
-      top: isSignupScreen ? 580 : 450,
+      top: isSignupScreen ? 580 : 370,
       right: 0,
       left: 0,
       child: Center(
-        // child: InkWell(
-        //   onTap: () async {
-        //     log(phonenumber);
-        //     var response = await http.post(
-        //         Uri.parse(
-        // "https://preprod-lendx.neokredx.com/kyc-svc/api/v1/kyc/std/profilex/score-advance"),
-        // headers: {
-        // "secret-key": "pKd9czMKRjgRRzaSZFFqhuk9b2Kl",
-        //  "access-key": "836JXGlYLyTksy0kOwBfjzHHHWhqTRWnUiXwTz",
-        // "neokredx-client-id": "82cf6bee-2036-45ff-94c3-9e59bf9b27c4"
-        // },
-        // body: json.encode({
-        //  "requestId": "jhjgfhhgcvvhvh",
-        //  "mobileNo": "9867493007",
-        // }));
-        //log(response.body);
-        // setState(() {
-        //   // isSignupScreen = true;
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => const MobileOtp()),
-        //   );
-        // });
-        // },
-        child: Container(
-          height: 90,
-          width: 90,
-          padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(50),
-              boxShadow: [
-                if (showShadow)
-                  BoxShadow(
-                    color: Colors.blue.withOpacity(.3),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(0, 1),
-                  )
-              ]),
+        child: InkWell(
+          onTap: () {
+            if (_inputValue == '' || _inputValue.length != 10) {
+              Fluttertoast.showToast(msg: "Enter a valid number");
+            } else {
+              verifyPhoneNumber(_inputValue);
+              setState(() {
+                loading = true;
+              });
+              // Navigator.push(context, MaterialPageRoute(builder: (_) => MobileOtp(otp: _verificationId)));
+            }
+          },
           child: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Colors.orange[200]!, Colors.orange[900]!],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight),
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.blue.withOpacity(.6),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: const Offset(0, 1),
+            height: 90,
+            width: 90,
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50), boxShadow: [
+              if (showShadow)
+                BoxShadow(
+                  color: Colors.blue.withOpacity(.3),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: const Offset(0, 1),
+                )
+            ]),
+            child: loading
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.yellow,
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [Colors.orange[200]!, Colors.orange[900]!],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight),
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.blue.withOpacity(.6),
+                            spreadRadius: 1,
+                            blurRadius: 5,
+                            offset: const Offset(0, 1),
+                          ),
+                        ]),
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                      size: 25,
+                    ),
                   ),
-                ]),
-            child: const Icon(
-              Icons.arrow_forward,
-              color: Colors.white,
-              size: 25,
-            ),
           ),
         ),
       ),
@@ -335,27 +248,35 @@ class _MobileNumberState extends State<MobileNumber> {
     );
   }
 
-  Widget buildTextField(
-      IconData icon, String hintText, bool isPassword, bool isEmail,
+  Widget buildTextField(IconData icon, String hintText, bool isPassword, bool isEmail,
       {required TextEditingController phonecontroler}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
-      child: TextField(
+      child: TextFormField(
         controller: phonecontroler,
         maxLength: 10,
         obscureText: isPassword,
         keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter a number';
+          }
+          return null;
+        },
+        onChanged: (value) {
+          setState(() {
+            _inputValue = value; // Update the string variable
+          });
+        },
         decoration: InputDecoration(
             prefixIcon: Icon(
               icon,
               color: Colors.orange,
             ),
             enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.black12),
-                borderRadius: BorderRadius.circular(35.0)),
+                borderSide: const BorderSide(color: Colors.black12), borderRadius: BorderRadius.circular(35.0)),
             focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.black),
-                borderRadius: BorderRadius.circular(35.0)),
+                borderSide: const BorderSide(color: Colors.black), borderRadius: BorderRadius.circular(35.0)),
             contentPadding: const EdgeInsets.all(10),
             hintText: hintText,
             labelText: labelText,

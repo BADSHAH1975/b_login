@@ -1,9 +1,12 @@
-import 'package:b_sell/screens/login_signup_screens/pan_number.dart';
+import 'package:b_sell/screens/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MobileOtp extends StatefulWidget {
-  const MobileOtp({super.key});
+  final String otp;
+  const MobileOtp({super.key, required this.otp});
 
   @override
   State<MobileOtp> createState() => _MobileOtpState();
@@ -12,6 +15,24 @@ class MobileOtp extends StatefulWidget {
 class _MobileOtpState extends State<MobileOtp> {
   bool isSignupScreen = false;
   get labelText => null;
+  String enteredOTP = '';
+
+  void verifyOTP(String enteredOTP) {
+    String verificationId = widget.otp;
+
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: enteredOTP,
+    );
+
+    FirebaseAuth.instance.signInWithCredential(credential).then((userCredential) {
+      print('OTP verified successfully');
+      Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+    }).catchError((error) {
+      print('Failed to verify OTP: $error');
+      Fluttertoast.showToast(msg: error.msg, backgroundColor: Colors.red, textColor: Colors.white);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,16 +92,13 @@ class _MobileOtpState extends State<MobileOtp> {
               padding: const EdgeInsets.all(20),
               width: MediaQuery.of(context).size.width - 40,
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.indigoAccent.withOpacity(0.3),
-                      blurRadius: 15,
-                      spreadRadius: 5,
-                    ),
-                  ]),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), boxShadow: [
+                BoxShadow(
+                  color: Colors.indigoAccent.withOpacity(0.3),
+                  blurRadius: 15,
+                  spreadRadius: 5,
+                ),
+              ]),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -91,10 +109,7 @@ class _MobileOtpState extends State<MobileOtp> {
                           children: [
                             const Text(
                               "Mobile Number OTP",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
+                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
                             ),
                             Container(
                               margin: const EdgeInsets.only(top: 3),
@@ -141,29 +156,27 @@ class _MobileOtpState extends State<MobileOtp> {
         child: Center(
           child: GestureDetector(
             onTap: () {
-              setState(() {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PanNumber()),
-                );
-              });
+              verifyOTP(enteredOTP);
+              // setState(() {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => const PanNumber()),
+              //   );
+              // });
             },
             child: Container(
               height: 80,
               width: 80,
               padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(50),
-                  boxShadow: [
-                    if (showShadow)
-                      BoxShadow(
-                        color: Colors.indigoAccent.withOpacity(.3),
-                        spreadRadius: 2,
-                        blurRadius: 8,
-                        offset: const Offset(0, 1),
-                      )
-                  ]),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50), boxShadow: [
+                if (showShadow)
+                  BoxShadow(
+                    color: Colors.indigoAccent.withOpacity(.3),
+                    spreadRadius: 2,
+                    blurRadius: 8,
+                    offset: const Offset(0, 1),
+                  )
+              ]),
               child: Container(
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -190,8 +203,7 @@ class _MobileOtpState extends State<MobileOtp> {
         ));
   }
 
-  Widget buildTextField(
-      IconData icon, String hintText, bool isPassword, bool isEmail) {
+  Widget buildTextField(IconData icon, String hintText, bool isPassword, bool isEmail) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Row(
@@ -201,115 +213,29 @@ class _MobileOtpState extends State<MobileOtp> {
             child: Pinput(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              androidSmsAutofillMethod:
-                  AndroidSmsAutofillMethod.smsUserConsentApi,
-              length: 4,
+              androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsUserConsentApi,
+              length: 6,
               autofocus: isPassword,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
+              onChanged: (value) {
+                setState(() {
+                  enteredOTP = value;
+                });
+              },
+              onSubmitted: (pin) {
+                verifyOTP(pin);
+              },
               defaultPinTheme: PinTheme(
-                  height: 65,
-                  width: 65,
-                  textStyle: const TextStyle(
-                      fontSize: 30, fontWeight: FontWeight.w900),
+                  height: 40,
+                  width: 40,
+                  textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.indigo[100],
-                      border: Border.all(
-                          color: Colors.blue.withOpacity(0.5), width: 2))),
+                      border: Border.all(color: Colors.blue.withOpacity(0.5), width: 2))),
             ),
-
-            // child: TextFormField(
-            //   onChanged: (value) {
-            //     FocusScope.of(context).nextFocus();
-            //   },
-            //   style: Theme.of(context).textTheme.headlineLarge,
-            //   keyboardType: TextInputType.number,
-            //   textAlign: TextAlign.center,
-            //   inputFormatters: [
-            //     LengthLimitingTextInputFormatter(1),
-            //     FilteringTextInputFormatter.digitsOnly,
-            //   ],
-            // ),
           ),
-          // SizedBox(
-          //   height: 50,
-          //   width: 50,
-          //   child: TextFormField(
-          //     onChanged: (value) {
-          //       FocusScope.of(context).nextFocus();
-          //     },
-          //     style: Theme.of(context).textTheme.headlineLarge,
-          //     keyboardType: TextInputType.number,
-          //     textAlign: TextAlign.center,
-          //     inputFormatters: [
-          //       LengthLimitingTextInputFormatter(1),
-          //       FilteringTextInputFormatter.digitsOnly,
-          //     ],
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 50,
-          //   width: 50,
-          //   child: TextFormField(
-          //     onChanged: (value) {
-          //       FocusScope.of(context).nextFocus();
-          //     },
-          //     style: Theme.of(context).textTheme.headlineLarge,
-          //     keyboardType: TextInputType.number,
-          //     textAlign: TextAlign.center,
-          //     inputFormatters: [
-          //       LengthLimitingTextInputFormatter(1),
-          //       FilteringTextInputFormatter.digitsOnly,
-          //     ],
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 50,
-          //   width: 50,
-          //   child: TextFormField(
-          //     onChanged: (value) {
-          //       FocusScope.of(context).nextFocus();
-          //     },
-          //     style: Theme.of(context).textTheme.headlineLarge,
-          //     keyboardType: TextInputType.number,
-          //     textAlign: TextAlign.center,
-          //     inputFormatters: [
-          //       LengthLimitingTextInputFormatter(1),
-          //       FilteringTextInputFormatter.digitsOnly,
-          //     ],
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 50,
-          //   width: 50,
-          //   child: TextFormField(
-          //     onChanged: (value) {
-          //       FocusScope.of(context).nextFocus();
-          //     },
-          //     style: Theme.of(context).textTheme.headlineLarge,
-          //     keyboardType: TextInputType.number,
-          //     textAlign: TextAlign.center,
-          //     inputFormatters: [
-          //       LengthLimitingTextInputFormatter(1),
-          //       FilteringTextInputFormatter.digitsOnly,
-          //     ],
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 50,
-          //   width: 50,
-          //   child: TextFormField(
-          //     onChanged: (value) {
-          //       FocusScope.of(context).nextFocus();
-          //     },
-          //     style: Theme.of(context).textTheme.headlineLarge,
-          //     keyboardType: TextInputType.number,
-          //     textAlign: TextAlign.center,
-          //     inputFormatters: [
-          //       LengthLimitingTextInputFormatter(1),
-          //       FilteringTextInputFormatter.digitsOnly,
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );

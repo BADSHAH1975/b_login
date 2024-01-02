@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "470157246676",
+    "project_id": "blogin-a7835",
+    "storage_bucket": "blogin-a7835.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470157246676:android:62ee87057a0242059e7b41",
+        "android_client_info": {
+          "package_name": "com.badshah.b_login"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCH8yKbYVz2DgDSznvJ-KKTne3nLePOT0E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

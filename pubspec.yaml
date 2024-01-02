@@ -43,7 +43,7 @@ dependencies:
   flutter_local_notifications: ^14.0.0+1
   firebase_messaging: ^14.5.0
   #platform_device_id: ^1.0.1
-  fluttertoast: ^8.0.9
+  fluttertoast: ^8.2.4
   http: ^0.13.5
   pinput: ^3.0.1
   
