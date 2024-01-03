@@ -46,6 +46,8 @@ dependencies:
   fluttertoast: ^8.2.4
   http: ^0.13.5
   pinput: ^3.0.1
+  sms_autofill: ^2.3.0
+  logger: ^2.0.2+1
   
 
 

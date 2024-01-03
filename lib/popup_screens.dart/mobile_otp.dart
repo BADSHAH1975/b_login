@@ -1,8 +1,10 @@
+import 'package:b_sell/main.dart';
 import 'package:b_sell/screens/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 class MobileOtp extends StatefulWidget {
   final String otp;
@@ -17,6 +19,25 @@ class _MobileOtpState extends State<MobileOtp> {
   get labelText => null;
   String enteredOTP = '';
 
+  @override
+  void initState() {
+    // startListeningForSMS();
+    super.initState();
+  }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
+
+  void startListeningForSMS() async {
+    try {
+      await SmsAutoFill().listenForCode();
+    } catch (error) {
+      logger.e(error);
+    }
+  }
+
   void verifyOTP(String enteredOTP) {
     String verificationId = widget.otp;
 
@@ -26,10 +47,10 @@ class _MobileOtpState extends State<MobileOtp> {
     );
 
     FirebaseAuth.instance.signInWithCredential(credential).then((userCredential) {
-      print('OTP verified successfully');
+      logger.d('OTP verified successfully');
       Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
     }).catchError((error) {
-      print('Failed to verify OTP: $error');
+      logger.d('Failed to verify OTP: $error');
       Fluttertoast.showToast(msg: error.msg, backgroundColor: Colors.red, textColor: Colors.white);
     });
   }
@@ -41,6 +62,7 @@ class _MobileOtpState extends State<MobileOtp> {
       body: Stack(
         children: [
           // LOGO CONTAINER
+
           Positioned(
               top: 0,
               left: 0,
@@ -157,12 +179,6 @@ class _MobileOtpState extends State<MobileOtp> {
           child: GestureDetector(
             onTap: () {
               verifyOTP(enteredOTP);
-              // setState(() {
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(builder: (context) => const PanNumber()),
-              //   );
-              // });
             },
             child: Container(
               height: 80,
@@ -210,32 +226,60 @@ class _MobileOtpState extends State<MobileOtp> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           SizedBox(
-            child: Pinput(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsUserConsentApi,
-              length: 6,
-              autofocus: isPassword,
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.done,
-              onChanged: (value) {
-                setState(() {
-                  enteredOTP = value;
-                });
-              },
-              onSubmitted: (pin) {
-                verifyOTP(pin);
-              },
-              defaultPinTheme: PinTheme(
-                  height: 40,
-                  width: 40,
-                  textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.indigo[100],
-                      border: Border.all(color: Colors.blue.withOpacity(0.5), width: 2))),
-            ),
-          ),
+              width: 300,
+              child: Column(
+                children: [
+                  // PinFieldAutoFill(
+                  //   decoration:
+                  //   BoxLooseDecoration(
+                  //     // shape: BoxShape.circle,
+                  //     // color: Colors.indigo[100],
+                  //     // border: Border.all(color: Colors.blue.withOpacity(0.5), width: 2,
+                  //     strokeColorBuilder: PinListenColorBuilder(Colors.black, Colors.black26),
+                  //     bgColorBuilder: const FixedColorBuilder(Colors.black),
+                  //     strokeWidth: 2,
+
+                  //   ),
+                  //   autoFocus: true,
+                  //   cursor: Cursor(color: Colors.red, enabled: true, width: 1),
+                  //   currentCode: '',
+                  //   onCodeSubmitted: (code) {
+                  //     verifyOTP(code);
+                  //   },
+                  //   codeLength: 6,
+                  //   onCodeChanged: (code) {
+                  //     setState(() {
+                  //       enteredOTP = code!;
+                  //     });
+                  //   },
+                  // ),
+                  Pinput(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsRetrieverApi,
+                    length: 6,
+                    autofocus: isPassword,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.done,
+                    onChanged: (value) {
+                      setState(() {
+                        enteredOTP = value;
+                      });
+                    },
+                    onSubmitted: (pin) {
+                      verifyOTP(pin);
+                    },
+                    defaultPinTheme: PinTheme(
+                        height: 40,
+                        width: 40,
+                        textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.indigo[100],
+                            border: Border.all(color: Colors.blue.withOpacity(0.5), width: 2))),
+                  ),
+                ],
+              )),
         ],
       ),
     );

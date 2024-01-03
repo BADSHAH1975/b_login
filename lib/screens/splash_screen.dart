@@ -1,4 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:b_sell/authentication_wrapper.dart';
+import 'package:b_sell/popup_screens.dart/mobile_otp.dart';
 
 import 'package:b_sell/screens/login_signup_screens/mobile_number.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,7 @@ class SplashScreen extends StatelessWidget {
         fit: BoxFit.cover,
       ),
       splashIconSize: 600,
-      nextScreen: const MobileNumber(),
+      nextScreen: AuthenticationWrapper(),
       splashTransition: SplashTransition.scaleTransition,
       duration: 200,
     );

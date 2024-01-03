@@ -1,3 +1,4 @@
+import 'package:b_sell/main.dart';
 import 'package:b_sell/popup_screens.dart/mobile_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,10 @@ class _MobileNumberState extends State<MobileNumber> {
       },
       verificationFailed: (FirebaseAuthException e) {
         if (e.code == 'invalid-phone-number') {
-          print('The provided phone number is not valid.');
+          logger.d('The provided phone number is not valid.');
+          setState(() {
+            loading = false;
+          });
         }
       },
       codeSent: (String verificationId, int? resendToken) {
@@ -45,6 +49,9 @@ class _MobileNumberState extends State<MobileNumber> {
       codeAutoRetrievalTimeout: (String verificationId) {
         setState(() {
           _verificationId = verificationId;
+        });
+        setState(() {
+          loading = false;
         });
       },
     );
@@ -256,7 +263,7 @@ class _MobileNumberState extends State<MobileNumber> {
         controller: phonecontroler,
         maxLength: 10,
         obscureText: isPassword,
-        keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
+        keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.number,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter a number';
