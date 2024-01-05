@@ -87,8 +87,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(
+                // primarySwatch: Colors.blue,
+                )
+            .copyWith(
+          background: Color.fromARGB(255, 206, 214, 230),
+        ),
+      ),
       home: SplashScreen(),
     );
   }
