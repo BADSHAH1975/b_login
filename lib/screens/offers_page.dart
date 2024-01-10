@@ -1,3 +1,4 @@
+import 'package:b_sell/appcolors.dart';
 import 'package:flutter/material.dart';
 
 class OffersPage extends StatefulWidget {
@@ -10,8 +11,13 @@ class OffersPage extends StatefulWidget {
 class _OffersPageState extends State<OffersPage> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Offers'),
+    return SingleChildScrollView(
+      child: Container(
+        // height: double.maxFinite,
+        width: double.infinity,
+        color: secondCont,
+        child: Text('Offers'),
+      ),
     );
   }
 }

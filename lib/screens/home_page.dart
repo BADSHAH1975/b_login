@@ -1,6 +1,8 @@
 import 'package:b_sell/appcolors.dart';
+import 'package:b_sell/screens/product/all_products.dart';
 import 'package:b_sell/screens/product/product_page.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
+import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,85 +16,196 @@ class _HomePageState extends State<HomePage> {
 
   int _currentPage = 0;
 
+  // final _offset = Offset(6, 6);
+  // double blur = 20.0;
+
+  final _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.4,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(100.0),
-              ),
-              color: cont,
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(120.0),
-              ),
-              color: cont,
-            ),
-            child: Container(
+      child: Container(
+        color: secondCont,
+        child: Column(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height * 0.35,
               width: double.infinity,
+              // padding: EdgeInsets.fromLTRB(, top, right, bottom),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(110.0),
+                  bottomLeft: Radius.circular(100.0),
                 ),
-                color: secondCont,
+                color: cont,
               ),
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Categories',
-                    style: TextStyle(fontSize: 16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Container(
+                      height: 50,
+                      // width: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.5),
+                            offset: Offset(2.0, -2.0),
+                            blurRadius: 5,
+                            inset: true,
+                          ),
+                          BoxShadow(
+                            color: Color(0xff151515),
+                            offset: Offset(-2.0, 2.0),
+                            blurRadius: 5,
+                            inset: true,
+                          ),
+                        ],
+                        color: cont,
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: TextFormField(
+                        controller: _searchController,
+                        style: TextStyle(
+                          color: secondCont,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          hintText: 'Search..',
+                          hintStyle: TextStyle(
+                            color: secondCont.withOpacity(0.7),
+                          ),
+                          // suffixIconConstraints: BoxConstraints(),
+                          // contentPadding: EdgeInsets.all(),
+                          suffixIcon: Icon(
+                            Icons.search,
+                            color: secondCont.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 30,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [_productTypes(), _productTypes(), _productTypes()],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [_productTypes(), _productTypes(), _productTypes()],
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 30),
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      width: 270,
+                      decoration: BoxDecoration(
+                        color: cont.withOpacity(0.8),
+                        border: Border(
+                          right: BorderSide(
+                            width: 2.0,
+                            color: Colors.white.withOpacity(0.3),
+                          ),
+                          top: BorderSide(
+                            width: 2.0,
+                            color: Colors.white.withOpacity(0.3),
+                          ),
+                        ),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(60),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: secondCont.withOpacity(0.5),
+                            // offset: Offset(-28, -28),
+                            offset: Offset(3.0, -3.0),
+                            blurRadius: 10.0,
+                          ),
+                          BoxShadow(
+                            color: cont.withOpacity(0.3),
+                            // offset: Offset(28.0, 28.0),
+                            offset: Offset(-6.0, 6.0),
+                            blurRadius: 10.0,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
-              // child: SizedBox(
-              //   width: double.infinity,
-              //   height: MediaQuery.of(context).size.height * 0.5,
-              //   child: GridView.count(
-              //     clipBehavior: Clip.antiAlias,
-              //     // physics: NeverScrollableScrollPhysics(),
-              //     // padding: EdgeInsets.zero,
-              //     crossAxisCount: 3,
-              //     mainAxisSpacing: 10,
-              //     crossAxisSpacing: 10,
-              //     childAspectRatio: 0.9,
-              //     children: [
-              //       _productTypes('images/diamondring.png', 'Rings'),
-              //       _productTypes('images/placeholder.png', 'Rings'),
-              //       _productTypes('images/placeholder.png', 'Rings'),
-              //       _productTypes('images/placeholder.png', 'Rings'),
-              //       _productTypes('images/placeholder.png', 'Rings'),
-              //       _productTypes('images/placeholder.png', 'Rings'),
-              //     ],
-              //   ),
-              // ),
             ),
-          ),
-        ],
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(120.0),
+                ),
+                color: cont,
+              ),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(110.0),
+                  ),
+                  color: secondCont,
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Categories',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _productTypes(Icon(Icons.diamond)),
+                        _productTypes(Icon(Icons.trending_up)),
+                        _productTypes(Icon(Icons.access_time))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _productTypes(Icon(Icons.diamond)),
+                        _productTypes(Icon(Icons.trending_up)),
+                        _productTypes(Icon(Icons.access_time))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 100,
+                    )
+                  ],
+                ),
+                // child: SizedBox(
+                //   width: double.infinity,
+                //   height: MediaQuery.of(context).size.height * 0.5,
+                //   child: GridView.count(
+                //     clipBehavior: Clip.antiAlias,
+                //     // physics: NeverScrollableScrollPhysics(),
+                //     // padding: EdgeInsets.zero,
+                //     crossAxisCount: 3,
+                //     mainAxisSpacing: 10,
+                //     crossAxisSpacing: 10,
+                //     childAspectRatio: 0.9,
+                //     children: [
+                //       _productTypes('images/diamondring.png', 'Rings'),
+                //       _productTypes('images/placeholder.png', 'Rings'),
+                //       _productTypes('images/placeholder.png', 'Rings'),
+                //       _productTypes('images/placeholder.png', 'Rings'),
+                //       _productTypes('images/placeholder.png', 'Rings'),
+                //       _productTypes('images/placeholder.png', 'Rings'),
+                //     ],
+                //   ),
+                // ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
     //   Padding(
@@ -197,25 +310,35 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _productTypes() {
-    return Container(
-      width: 100,
-      height: 100,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: secondCont.withOpacity(0.8),
-            offset: Offset(-6.0, -6.0),
-            blurRadius: 16.0,
-          ),
-          BoxShadow(
-            color: cont.withOpacity(0.3),
-            offset: Offset(6.0, 6.0),
-            blurRadius: 16.0,
-          ),
-        ],
-        color: Color(0xFFEFEEEE),
-        borderRadius: BorderRadius.circular(12.0),
+  Widget _productTypes(Icon icon) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => AllProducts()));
+      },
+      child: Container(
+        width: 100,
+        height: 100,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: secondCont.withOpacity(0.8),
+              // offset: Offset(-28, -28),
+              offset: Offset(-6.0, -6.0),
+              blurRadius: 20.0,
+            ),
+            BoxShadow(
+              color: cont.withOpacity(0.3),
+              // offset: Offset(28.0, 28.0),
+              offset: Offset(6.0, 6.0),
+              blurRadius: 20.0,
+            ),
+          ],
+          color: Color(0xFFEFEEEE),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: Center(
+          child: icon,
+        ),
       ),
     );
   }

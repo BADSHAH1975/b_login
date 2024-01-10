@@ -8,6 +8,8 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  bool _fav = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,9 +17,20 @@ class _ProductPageState extends State<ProductPage> {
       appBar: AppBar(
         automaticallyImplyLeading: true,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.favorite_border_outlined),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _fav = !_fav;
+              });
+            },
+            child: _fav
+                ? Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  )
+                : Icon(
+                    Icons.favorite_border,
+                  ),
           ),
         ],
       ),

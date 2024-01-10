@@ -1,11 +1,11 @@
+import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:b_sell/appcolors.dart';
 import 'package:b_sell/main.dart';
 import 'package:b_sell/screens/home_page.dart';
 import 'package:b_sell/screens/offers_page.dart';
 import 'package:b_sell/screens/settings_page.dart';
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+// import 'package:google_nav_bar/google_nav_bar.dart';
 
 class Layout extends StatefulWidget {
   const Layout({super.key});
@@ -17,18 +17,30 @@ class Layout extends StatefulWidget {
 class _LayoutState extends State<Layout> {
   int _currentIndex = 0;
   bool search = false;
-  NotchBottomBarController notchBottomBarController = NotchBottomBarController();
+  final _pageController = PageController(initialPage: 0);
+  final notchBottomBarController = NotchBottomBarController(index: 0);
 
-  final List<Widget> _pages = [
+  final List<Widget> _pages = const [
     HomePage(),
     OffersPage(),
     SettingsPage(),
   ];
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Color.fromARGB(255, 206, 214, 230),
+      backgroundColor: cont,
       appBar: AppBar(
         title: search ? _buildSearchField() : Text('STORE'),
         elevation: 0,
@@ -50,19 +62,9 @@ class _LayoutState extends State<Layout> {
           ),
         ],
       ),
-      body: Center(
-        child: Text(
-          'hello',
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
-      // IndexedStack(
-      //   index: _currentIndex,
-      //   children: _pages,
-      // ),
-      // SafeArea(
-      //   child: _pages[_currentIndex],
-      // ),
+      body: _pages[_currentIndex],
+      extendBody: true,
+      resizeToAvoidBottomInset: false,
       bottomNavigationBar: AnimatedNotchBottomBar(
         itemLabelStyle: TextStyle(color: secondCont, fontSize: 12),
         kIconSize: 24,
@@ -71,18 +73,9 @@ class _LayoutState extends State<Layout> {
         removeMargins: true,
         color: cont,
         notchColor: secondCont,
-        // pageController: _pageController,
-        //  : _currentIndex,
-
         onTap: (index) {
-          // notchBottomBarController.addListener(() => {
-          //   _currentIndex = index
-          // });
           setState(() {
-            // _currentIndex = index;
-            _currentIndex = notchBottomBarController.index;
-            // logger.d(index);
-            logger.d(_currentIndex);
+            _currentIndex = index;
           });
         },
         bottomBarItems: [
