@@ -1,6 +1,5 @@
 import 'package:b_sell/appcolors.dart';
 import 'package:b_sell/screens/product/all_products.dart';
-import 'package:b_sell/screens/product/product_page.dart';
 import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 
@@ -24,8 +23,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
-    return SingleChildScrollView(
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
       child: Container(
+        // padding: EdgeInsets.symmetric(vertical: 10),
         color: secondCont,
         child: Column(
           children: [
@@ -92,12 +93,64 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Container(
-                      margin: EdgeInsets.only(left: 30),
+                    child:
+                        // Container(
+                        //   width: 300.0,
+                        //   height: 150.0,
+                        //   padding: EdgeInsets.all(20.0),
+                        //   decoration: BoxDecoration(
+                        //     color: cont,
+                        //     borderRadius: BorderRadius.circular(15.0),
+                        //     boxShadow: [
+                        //       BoxShadow(
+                        //         color: Colors.white,
+                        //         blurRadius: 15.0,
+                        //         offset: Offset(-5.0, -5.0),
+                        //       ),
+                        //       BoxShadow(
+                        //         color: Colors.black12,
+                        //         blurRadius: 15.0,
+                        //         offset: Offset(5.0, 5.0),
+                        //       ),
+                        //     ],
+                        //   ),
+                        //   child: Column(
+                        //     mainAxisAlignment: MainAxisAlignment.start,
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: [
+                        //       Text(
+                        //         "MyDocs",
+                        //         style: TextStyle(
+                        //           fontSize: 20.0,
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //       ),
+                        //       SizedBox(height: 10.0),
+                        //       Text(
+                        //         "3248 files, 26 folders",
+                        //         style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
+                        //       ),
+                        //       SizedBox(height: 10.0),
+                        //       Text(
+                        //         "60 GB free",
+                        //         style: TextStyle(fontSize: 16.0, color: Colors.green[500]),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+
+                        Container(
+                      margin: EdgeInsets.only(left: 35),
                       height: MediaQuery.of(context).size.height * 0.2,
-                      width: 270,
+                      width: 250,
                       decoration: BoxDecoration(
-                        color: cont.withOpacity(0.8),
+                        // color: cont.withOpacity(0.8),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [cont],
+                          stops: [1.0],
+                        ),
                         border: Border(
                           right: BorderSide(
                             width: 2.0,
@@ -107,9 +160,14 @@ class _HomePageState extends State<HomePage> {
                             width: 2.0,
                             color: Colors.white.withOpacity(0.3),
                           ),
+                          // left: BorderSide(
+                          //   width: 2.0,
+                          //   color: Colors.white.withOpacity(0.3),
+                          // ),
                         ),
                         borderRadius: BorderRadius.only(
                           topRight: Radius.circular(60),
+                          topLeft: Radius.circular(10),
                         ),
                         boxShadow: [
                           BoxShadow(
@@ -119,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                             blurRadius: 10.0,
                           ),
                           BoxShadow(
-                            color: cont.withOpacity(0.3),
+                            color: Colors.black.withOpacity(0.3),
                             // offset: Offset(28.0, 28.0),
                             offset: Offset(-6.0, 6.0),
                             blurRadius: 10.0,

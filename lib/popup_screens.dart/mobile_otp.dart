@@ -1,5 +1,6 @@
 import 'package:b_sell/main.dart';
-import 'package:b_sell/screens/home_page.dart';
+import 'package:b_sell/screens/layout.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
@@ -15,6 +16,7 @@ class MobileOtp extends StatefulWidget {
 }
 
 class _MobileOtpState extends State<MobileOtp> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool isSignupScreen = false;
   get labelText => null;
   String enteredOTP = '';
@@ -38,6 +40,25 @@ class _MobileOtpState extends State<MobileOtp> {
     }
   }
 
+  Future<void> _saveUserData(User user) async {
+    try {
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+
+      if (!userDoc.exists) {
+        logger.i('User added in Firestore');
+        await _firestore.collection('users').doc(user.uid).set({
+          'phoneNumber': user.phoneNumber,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      } else {
+        logger.i('User already exists in Firestore');
+        logger.i(userDoc);
+      }
+    } catch (e) {
+      logger.e('Error saving user data: $e');
+    }
+  }
+
   void verifyOTP(String enteredOTP) {
     String verificationId = widget.otp;
 
@@ -48,7 +69,14 @@ class _MobileOtpState extends State<MobileOtp> {
 
     FirebaseAuth.instance.signInWithCredential(credential).then((userCredential) {
       logger.d('OTP verified successfully');
-      Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+      _saveUserData(userCredential.user!);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (_) => Layout(),
+        ),
+        (route) => false,
+      );
     }).catchError((error) {
       logger.d('Failed to verify OTP: $error');
       Fluttertoast.showToast(msg: error.msg, backgroundColor: Colors.red, textColor: Colors.white);

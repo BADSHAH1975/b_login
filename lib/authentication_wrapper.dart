@@ -1,4 +1,3 @@
-import 'package:b_sell/screens/home_page.dart';
 import 'package:b_sell/screens/login_signup_screens/mobile_number.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

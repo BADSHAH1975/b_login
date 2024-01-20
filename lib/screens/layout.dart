@@ -2,7 +2,7 @@ import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_not
 import 'package:b_sell/appcolors.dart';
 import 'package:b_sell/main.dart';
 import 'package:b_sell/screens/home_page.dart';
-import 'package:b_sell/screens/offers_page.dart';
+import 'package:b_sell/screens/fav_page.dart';
 import 'package:b_sell/screens/settings_page.dart';
 import 'package:flutter/material.dart';
 // import 'package:google_nav_bar/google_nav_bar.dart';
@@ -22,9 +22,22 @@ class _LayoutState extends State<Layout> {
 
   final List<Widget> _pages = const [
     HomePage(),
-    OffersPage(),
+    FavPage(),
     SettingsPage(),
   ];
+
+  String getTitle(int condition) {
+    switch (condition) {
+      case 0:
+        return 'STORE';
+      case 1:
+        return 'FAVOURITES';
+      case 2:
+        return 'INFO';
+      default:
+        return 'Default Option';
+    }
+  }
 
   @override
   void initState() {
@@ -42,7 +55,13 @@ class _LayoutState extends State<Layout> {
     return Scaffold(
       backgroundColor: cont,
       appBar: AppBar(
-        title: search ? _buildSearchField() : Text('STORE'),
+        scrolledUnderElevation: 0,
+        title: Text(
+          getTitle(_currentIndex),
+          style: TextStyle(
+            color: secondCont,
+          ),
+        ),
         elevation: 0,
         backgroundColor: cont,
         actions: [

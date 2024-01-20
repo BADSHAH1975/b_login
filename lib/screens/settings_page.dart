@@ -25,7 +25,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
 
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
+      duration: Duration(seconds: 0),
     );
 
     _animation = Tween<double>(
@@ -33,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
       end: 1.0,
     ).animate(_controller);
 
-    Future.delayed(Duration(milliseconds: 10), () {
+    Future.delayed(Duration(milliseconds: 0), () {
       _controller.forward();
     });
   }

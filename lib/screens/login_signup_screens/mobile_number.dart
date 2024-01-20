@@ -12,7 +12,7 @@ class MobileNumber extends StatefulWidget {
 }
 
 class _MobileNumberState extends State<MobileNumber> {
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool loading = false;
   bool isSignupScreen = false;
   get labelText => null;
@@ -29,8 +29,16 @@ class _MobileNumberState extends State<MobileNumber> {
   Future<void> verifyPhoneNumber(String phnumber) async {
     await _auth.verifyPhoneNumber(
       phoneNumber: "+91$phnumber",
-      verificationCompleted: (PhoneAuthCredential credential) {
+      verificationCompleted: (PhoneAuthCredential credential) async {
         _auth.signInWithCredential(credential);
+        // UserCredential result = await _auth.signInWithCredential(credential);
+        // Navigator.pushAndRemoveUntil(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (_) => const Layout(),
+        //   ),
+        //   (route) => false,
+        // );
       },
       verificationFailed: (FirebaseAuthException e) {
         if (e.code == 'invalid-phone-number') {
@@ -41,18 +49,22 @@ class _MobileNumberState extends State<MobileNumber> {
         }
       },
       codeSent: (String verificationId, int? resendToken) {
-        setState(() {
-          _verificationId = verificationId;
-        });
+        if (mounted) {
+          setState(() {
+            _verificationId = verificationId;
+          });
+        }
         Navigator.push(context, MaterialPageRoute(builder: (_) => MobileOtp(otp: _verificationId)));
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        setState(() {
-          _verificationId = verificationId;
-        });
-        setState(() {
-          loading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _verificationId = verificationId;
+          });
+          setState(() {
+            loading = false;
+          });
+        }
       },
     );
   }
@@ -263,7 +275,7 @@ class _MobileNumberState extends State<MobileNumber> {
         controller: phonecontroler,
         maxLength: 10,
         obscureText: isPassword,
-        keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.number,
+        keyboardType: TextInputType.number,
         validator: (value) {
           if (value == null || value.isEmpty) {
             return 'Please enter a number';
