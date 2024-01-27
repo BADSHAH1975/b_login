@@ -1,26 +1,35 @@
+import 'package:animations/animations.dart';
 import 'package:b_sell/models/product.dart';
 import 'package:b_sell/screens/product/product_page.dart';
-import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class ProductItem extends StatefulWidget {
+class ProductSearchItem extends StatefulWidget {
   final Product product;
 
-  ProductItem(this.product);
+  const ProductSearchItem({super.key, required this.product});
 
   @override
-  State<ProductItem> createState() => _ProductItemState();
+  State<ProductSearchItem> createState() => _ProductSearchItemState();
 }
 
-class _ProductItemState extends State<ProductItem> {
-
+class _ProductSearchItemState extends State<ProductSearchItem> {
   @override
   Widget build(BuildContext context) {
     return OpenContainer(
       transitionType: ContainerTransitionType.fadeThrough,
       closedBuilder: (BuildContext _, VoidCallback openContainer) {
-        return Container(
+        return ListTile(
+          leading: SizedBox(
+            width: 60,
+            child: CachedNetworkImage(
+              imageUrl: widget.product.imageUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+          title: Text(widget.product.name),
+        );
+        Container(
           decoration: BoxDecoration(
             color: Color(0xFFEFEEEE),
             borderRadius: BorderRadius.circular(2.0),

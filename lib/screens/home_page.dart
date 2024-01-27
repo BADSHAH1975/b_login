@@ -1,7 +1,14 @@
 import 'package:b_sell/appcolors.dart';
+import 'package:b_sell/bloc/search_bloc.dart';
+import 'package:b_sell/models/product.dart';
 import 'package:b_sell/screens/product/all_products.dart';
+import 'package:b_sell/screens/product/product_item.dart';
+import 'package:b_sell/screens/product/products_search_item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
+import 'package:material_floating_search_bar_2/material_floating_search_bar_2.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   // double blur = 20.0;
 
   final _searchController = TextEditingController();
+  String _query = '';
 
   @override
   Widget build(BuildContext context) {
@@ -28,326 +36,185 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         // padding: EdgeInsets.symmetric(vertical: 10),
         color: secondCont,
-        child: Column(
+        child: Stack(
           children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.35,
-              width: double.infinity,
-              // padding: EdgeInsets.fromLTRB(, top, right, bottom),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(100.0),
-                ),
-                color: cont,
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: Container(
-                      height: 50,
-                      // width: 100,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.white.withOpacity(0.5),
-                            offset: Offset(2.0, -2.0),
-                            blurRadius: 5,
-                            inset: true,
+            Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  width: double.infinity,
+                  // padding: EdgeInsets.fromLTRB(, top, right, bottom),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(100.0),
+                    ),
+                    color: cont,
+                  ),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: Container(
+                          height: 50,
+                          // width: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.5),
+                                offset: Offset(2.0, -2.0),
+                                blurRadius: 5,
+                                inset: true,
+                              ),
+                              const BoxShadow(
+                                color: Color(0xff151515),
+                                offset: Offset(-2.0, 2.0),
+                                blurRadius: 5,
+                                inset: true,
+                              ),
+                            ],
+                            color: cont,
                           ),
-                          BoxShadow(
-                            color: Color(0xff151515),
-                            offset: Offset(-2.0, 2.0),
-                            blurRadius: 5,
-                            inset: true,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: TextFormField(
+                            controller: _searchController,
+                            onChanged: (query) {
+                              BlocProvider.of<SearchBloc>(context).add(PerformSearch(query));
+                            },
+                            style: TextStyle(
+                              color: secondCont,
+                            ),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              hintText: 'Search..',
+                              hintStyle: TextStyle(
+                                color: secondCont.withOpacity(0.7),
+                              ),
+                              // suffixIconConstraints: BoxConstraints(),
+                              // contentPadding: EdgeInsets.all(),
+                              suffixIcon: Icon(
+                                Icons.search,
+                                color: secondCont.withOpacity(0.7),
+                              ),
+                            ),
                           ),
-                        ],
-                        color: cont,
+                        ),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: TextFormField(
-                        controller: _searchController,
-                        style: TextStyle(
-                          color: secondCont,
-                        ),
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          hintText: 'Search..',
-                          hintStyle: TextStyle(
-                            color: secondCont.withOpacity(0.7),
-                          ),
-                          // suffixIconConstraints: BoxConstraints(),
-                          // contentPadding: EdgeInsets.all(),
-                          suffixIcon: Icon(
-                            Icons.search,
-                            color: secondCont.withOpacity(0.7),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: EdgeInsets.only(left: 35),
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          width: 250,
+                          decoration: BoxDecoration(
+                            // color: cont.withOpacity(0.8),
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [cont],
+                              stops: [1.0],
+                            ),
+                            border: Border(
+                              right: BorderSide(
+                                width: 2.0,
+                                color: Colors.white.withOpacity(0.3),
+                              ),
+                              top: BorderSide(
+                                width: 2.0,
+                                color: Colors.white.withOpacity(0.3),
+                              ),
+                              // left: BorderSide(
+                              //   width: 2.0,
+                              //   color: Colors.white.withOpacity(0.3),
+                              // ),
+                            ),
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(60),
+                              topLeft: Radius.circular(10),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: secondCont.withOpacity(0.5),
+                                // offset: Offset(-28, -28),
+                                offset: Offset(3.0, -3.0),
+                                blurRadius: 10.0,
+                              ),
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.3),
+                                // offset: Offset(28.0, 28.0),
+                                offset: Offset(-6.0, 6.0),
+                                blurRadius: 10.0,
+                              ),
+                            ],
                           ),
                         ),
                       ),
+                    ],
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(120.0),
                     ),
+                    color: cont,
                   ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child:
-                        // Container(
-                        //   width: 300.0,
-                        //   height: 150.0,
-                        //   padding: EdgeInsets.all(20.0),
-                        //   decoration: BoxDecoration(
-                        //     color: cont,
-                        //     borderRadius: BorderRadius.circular(15.0),
-                        //     boxShadow: [
-                        //       BoxShadow(
-                        //         color: Colors.white,
-                        //         blurRadius: 15.0,
-                        //         offset: Offset(-5.0, -5.0),
-                        //       ),
-                        //       BoxShadow(
-                        //         color: Colors.black12,
-                        //         blurRadius: 15.0,
-                        //         offset: Offset(5.0, 5.0),
-                        //       ),
-                        //     ],
-                        //   ),
-                        //   child: Column(
-                        //     mainAxisAlignment: MainAxisAlignment.start,
-                        //     crossAxisAlignment: CrossAxisAlignment.start,
-                        //     children: [
-                        //       Text(
-                        //         "MyDocs",
-                        //         style: TextStyle(
-                        //           fontSize: 20.0,
-                        //           fontWeight: FontWeight.bold,
-                        //         ),
-                        //       ),
-                        //       SizedBox(height: 10.0),
-                        //       Text(
-                        //         "3248 files, 26 folders",
-                        //         style: TextStyle(fontSize: 16.0, color: Colors.grey[600]),
-                        //       ),
-                        //       SizedBox(height: 10.0),
-                        //       Text(
-                        //         "60 GB free",
-                        //         style: TextStyle(fontSize: 16.0, color: Colors.green[500]),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-
-                        Container(
-                      margin: EdgeInsets.only(left: 35),
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      width: 250,
-                      decoration: BoxDecoration(
-                        // color: cont.withOpacity(0.8),
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [cont],
-                          stops: [1.0],
-                        ),
-                        border: Border(
-                          right: BorderSide(
-                            width: 2.0,
-                            color: Colors.white.withOpacity(0.3),
-                          ),
-                          top: BorderSide(
-                            width: 2.0,
-                            color: Colors.white.withOpacity(0.3),
-                          ),
-                          // left: BorderSide(
-                          //   width: 2.0,
-                          //   color: Colors.white.withOpacity(0.3),
-                          // ),
-                        ),
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(60),
-                          topLeft: Radius.circular(10),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: secondCont.withOpacity(0.5),
-                            // offset: Offset(-28, -28),
-                            offset: Offset(3.0, -3.0),
-                            blurRadius: 10.0,
-                          ),
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            // offset: Offset(28.0, 28.0),
-                            offset: Offset(-6.0, 6.0),
-                            blurRadius: 10.0,
-                          ),
-                        ],
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(110.0),
                       ),
+                      color: secondCont,
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(120.0),
-                ),
-                color: cont,
-              ),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(110.0),
-                  ),
-                  color: secondCont,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Categories',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _productTypes(Icon(Icons.diamond)),
-                        _productTypes(Icon(Icons.trending_up)),
-                        _productTypes(Icon(Icons.access_time))
+                        const Text(
+                          'Categories',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _productTypes(Icon(Icons.diamond)),
+                            _productTypes(Icon(Icons.trending_up)),
+                            _productTypes(Icon(Icons.access_time))
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _productTypes(Icon(Icons.diamond)),
+                            _productTypes(Icon(Icons.trending_up)),
+                            _productTypes(Icon(Icons.access_time))
+                          ],
+                        ),
+                        SizedBox(
+                          height: 100,
+                        )
                       ],
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _productTypes(Icon(Icons.diamond)),
-                        _productTypes(Icon(Icons.trending_up)),
-                        _productTypes(Icon(Icons.access_time))
-                      ],
-                    ),
-                    SizedBox(
-                      height: 100,
-                    )
-                  ],
+                  ),
                 ),
-                // child: SizedBox(
-                //   width: double.infinity,
-                //   height: MediaQuery.of(context).size.height * 0.5,
-                //   child: GridView.count(
-                //     clipBehavior: Clip.antiAlias,
-                //     // physics: NeverScrollableScrollPhysics(),
-                //     // padding: EdgeInsets.zero,
-                //     crossAxisCount: 3,
-                //     mainAxisSpacing: 10,
-                //     crossAxisSpacing: 10,
-                //     childAspectRatio: 0.9,
-                //     children: [
-                //       _productTypes('images/diamondring.png', 'Rings'),
-                //       _productTypes('images/placeholder.png', 'Rings'),
-                //       _productTypes('images/placeholder.png', 'Rings'),
-                //       _productTypes('images/placeholder.png', 'Rings'),
-                //       _productTypes('images/placeholder.png', 'Rings'),
-                //       _productTypes('images/placeholder.png', 'Rings'),
-                //     ],
-                //   ),
-                // ),
-              ),
+              ],
             ),
+            buildFloatingSearchBar(),
           ],
         ),
       ),
     );
-    //   Padding(
-    //     padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-    //     child: Column(
-    //       children: [
-    //         // CustomPaint(
-    //         //   painter: CurvedLinePainter(),
-    //         //   size: Size(MediaQuery.of(context).size.width, 300),
-    //         // ),
-    //         SizedBox(
-    //           height: MediaQuery.of(context).size.height * 0.25,
-    //           width: double.infinity,
-    //           child: PageView.builder(
-    //               itemCount: 3,
-    //               onPageChanged: (index) {
-    //                 setState(() {
-    //                   _currentPage = index;
-    //                 });
-    //               },
-    //               itemBuilder: (context, index) {
-    //                 return Image.asset(
-    //                   'images/placeholder.png',
-    //                   color: Colors.amber,
-    //                 );
-    //               }),
-    //         ),
-    //         _buildPageIndicator(),
-    //         const SizedBox(
-    //           height: 10,
-    //         ),
-    //         SizedBox(
-    //           width: double.infinity,
-    //           height: MediaQuery.of(context).size.height * 0.4,
-    //           child: GridView.count(
-    //             physics: NeverScrollableScrollPhysics(),
-    //             padding: EdgeInsets.zero,
-    //             crossAxisCount: 3,
-    //             mainAxisSpacing: 0,
-    //             crossAxisSpacing: 3,
-    //             childAspectRatio: 0.9,
-    //             children: [
-    //               _productTypes('images/diamondring.png', 'Rings'),
-    //               _productTypes('images/placeholder.png', 'Rings'),
-    //               _productTypes('images/placeholder.png', 'Rings'),
-    //               _productTypes('images/placeholder.png', 'Rings'),
-    //               _productTypes('images/placeholder.png', 'Rings'),
-    //               _productTypes('images/placeholder.png', 'Rings'),
-    //             ],
-    //           ),
-    //         ),
-    //         Container(
-    //           margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-    //           height: MediaQuery.of(context).size.height * 0.1,
-    //           width: double.infinity,
-    //           child: Row(
-    //             // mainAxisSize: MainAxisSize.max,
-    //             // mainAxisAlignment: MainAxisAlignment.start,
-    //             children: [
-    //               Expanded(
-    //                 child: GestureDetector(
-    //                   onTap: () {
-    //                     Navigator.push(context, MaterialPageRoute(builder: (_) => ProductPage()));
-    //                   },
-    //                   child: Container(
-    //                     color: Colors.black,
-    //                   ),
-    //                 ),
-    //               ),
-    //               const SizedBox(
-    //                 width: 10,
-    //               ),
-    //               Expanded(
-    //                 child: Container(
-    //                   color: Colors.blue,
-    //                 ),
-    //               )
-    //             ],
-    //           ),
-    //         )
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 
   Widget _buildPageIndicator() {
@@ -398,6 +265,154 @@ class _HomePageState extends State<HomePage> {
           child: icon,
         ),
       ),
+    );
+  }
+
+  Widget buildFloatingSearchBar() {
+    // final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
+    return FloatingSearchBar(
+      hint: 'Search...',
+      scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
+      transitionDuration: const Duration(milliseconds: 200),
+      transitionCurve: Curves.easeInOut,
+      physics: const BouncingScrollPhysics(),
+      // axisAlignment: isPortrait ? 0.0 : -1.0,
+      openAxisAlignment: 0.0,
+      height: 40,
+      debounceDelay: const Duration(milliseconds: 500),
+      borderRadius: BorderRadius.circular(30),
+
+      // shadowColor: ,
+      // decoration: BoxDecoration(
+      //   borderRadius: BorderRadius.circular(30),
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.white.withOpacity(0.5),
+      //       offset: Offset(2.0, -2.0),
+      //       blurRadius: 5,
+      //       inset: true,
+      //     ),
+      //     const BoxShadow(
+      //       color: Color(0xff151515),
+      //       offset: Offset(-2.0, 2.0),
+      //       blurRadius: 5,
+      //       inset: true,
+      //     ),
+      //   ],
+      //   color: cont,
+      // ),
+      onQueryChanged: (query) {
+        // Call your model, bloc, controller here.
+        // BlocProvider.of<SearchBloc>(context).add(PerformSearch(query));
+
+        setState(() {
+          _query = query.toLowerCase();
+        });
+      },
+      // Specify a custom transition to be used for
+      // animating between opened and closed stated.
+      transition: CircularFloatingSearchBarTransition(),
+      actions: [
+        FloatingSearchBarAction(
+          showIfOpened: false,
+          child: CircularButton(
+            icon: const Icon(Icons.place),
+            onPressed: () {},
+          ),
+        ),
+        FloatingSearchBarAction.searchToClear(
+          showIfClosed: false,
+        ),
+      ],
+      builder: (context, transition) {
+        // return BlocBuilder<SearchBloc, SearchState>(
+        //   builder: (context, state) {
+        //     if (state is SearchLoading) {
+        //       return Center(child: CircularProgressIndicator());
+        //     } else if (state is SearchLoaded) {
+        //       return ClipRRect(
+        //         borderRadius: BorderRadius.circular(8),
+        //         child: Material(
+        //           color: Colors.white,
+        //           elevation: 4.0,
+        //           child: ListView.builder(
+        //             itemCount: state.products.length,
+        //             itemBuilder: (context, index) {
+        //               final product = state.products[index];
+        //               return ListTile(
+        //                 title: Text(product.name),
+        //                 // Add more details or customize the ListTile as needed
+        //               );
+        //             },
+        //           ),
+        //         ),
+        //       );
+        //     } else if (state is SearchError) {
+        //       return Center(child: Text('Error: ${state.error}'));
+        //     } else {
+        //       return Container(); // Empty container when no search query
+        //     }
+        //   },
+        // );
+        return StreamBuilder<QuerySnapshot>(
+          stream:
+              // _query == ''
+              //     ? FirebaseFirestore.instance.collection('products').snapshots()
+              //     :
+              FirebaseFirestore.instance
+                  .collection('products')
+                  // .orderBy('name')
+                  .where('name', isGreaterThanOrEqualTo: _query)
+                  .where('name', isLessThanOrEqualTo: _query + '\uf7ff')
+                  // .startAt([_query]).endAt([_query])
+                  .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Center(child: Text('Something went wrong'));
+            }
+
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            final products = snapshot.data!.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: products.length,
+              itemBuilder: (context, index) => Container(
+                margin: EdgeInsets.symmetric(vertical: 5),
+                decoration: BoxDecoration(
+                    // border: Border.fromBorderSide(bottom: )
+                    ),
+                child: ProductSearchItem(
+                  product: products[index],
+                ),
+              ),
+            );
+          },
+        );
+
+        // return ClipRRect(
+        //   borderRadius: BorderRadius.circular(8),
+        //   child: Material(
+        //     color: Colors.white,
+        //     elevation: 4.0,
+        //     child: Container(
+        //       height: 100,
+        //       color: Colors.white,
+        //     ),
+        //     // Column(
+        //     //   mainAxisSize: MainAxisSize.min,
+        //     //   children: Colors.accents.map((color) {
+        //     //     return Container(height: 112, color: color);
+        //     //   }).toList(),
+        //     // ),
+        //   ),
+        // );
+      },
     );
   }
 }

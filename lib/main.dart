@@ -64,10 +64,12 @@
 // // }
 
 //---------------------------------------------------------------------------
+import 'package:b_sell/bloc/search_bloc.dart';
 import 'package:b_sell/firebase_options.dart';
 import 'package:b_sell/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -90,17 +92,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(
-                // primarySwatch: Colors.blue,
-                )
-            .copyWith(
-          background: Color.fromARGB(255, 206, 214, 230),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => SearchBloc()),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSwatch(
+                  // primarySwatch: Colors.blue,
+                  )
+              .copyWith(
+            background: Color.fromARGB(255, 206, 214, 230),
+          ),
         ),
+        home: SplashScreen(),
       ),
-      home: SplashScreen(),
     );
   }
 }

@@ -79,7 +79,7 @@ class _AllProductsState extends State<AllProducts> {
                         description: doc['description'],
                         type: doc['type'],
                         imageUrl: doc['image_url'],
-                        likes: doc['likes'],
+                        likesCount: doc['likesCount'],
                       ))
                   .toList();
 

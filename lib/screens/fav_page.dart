@@ -1,4 +1,5 @@
 import 'package:b_sell/appcolors.dart';
+import 'package:b_sell/main.dart';
 import 'package:b_sell/models/product.dart';
 import 'package:b_sell/screens/product/product_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,21 +15,30 @@ class FavPage extends StatefulWidget {
 }
 
 class _FavPageState extends State<FavPage> {
-  List<String> products = List.generate(5, (index) => 'Product $index');
+  // List<String> products = List.generate(5, (index) => 'Product $index');
   bool isLoading = false;
   // ScrollController _scrollController = ScrollController();
 
   Future<Product> fetchProductDetails(String productId) async {
+    final firestore = FirebaseFirestore.instance;
+    final user = FirebaseAuth.instance.currentUser;
     DocumentSnapshot productSnapshot = await FirebaseFirestore.instance.collection('products').doc(productId).get();
 
+    if (!productSnapshot.exists) {
+      await firestore.collection('users').doc(user!.uid).collection('saved').doc(productId).delete();
+    }
+
+    // Future.delayed(
+    //   Duration(milliseconds: 100),
+    // );
     return Product(
       id: productId,
-      name: productSnapshot['name'],
-      price: productSnapshot['price'].toDouble(),
-      description: productSnapshot['description'],
-      type: productSnapshot['type'],
-      imageUrl: productSnapshot['image_url'],
-      likes: productSnapshot['likes'],
+      name: productSnapshot['name'] ?? '',
+      price: productSnapshot['price'].toDouble() ?? 0.0,
+      description: productSnapshot['description'] ?? '',
+      type: productSnapshot['type'] ?? '',
+      imageUrl: productSnapshot['image_url'] ?? '',
+      likesCount: productSnapshot['likesCount'] ?? '',
     );
   }
 
@@ -42,23 +52,67 @@ class _FavPageState extends State<FavPage> {
 
       List<String> favoriteProductIds = snapshot.docs.map((savedID) => savedID.id).toList();
 
-      List<Future<Product>> productDetailsFutures = favoriteProductIds.map((productId) {
+      List<Future<Product?>> productDetailsFutures = favoriteProductIds.map((productId) {
         return fetchProductDetails(productId);
       }).toList();
 
-      return Future.wait(productDetailsFutures);
+      await Future.delayed(Duration(milliseconds: 3000));
+
+      // List<Product> validProductsDetails = [];
+      List<Product?> productDetailsList = await Future.wait(productDetailsFutures);
+
+      // for (int i = 0; i < favoriteProductIds.length; i++) {
+      //   if (productDetailsList[i] != null) {
+      //     validProductsDetails.add(productDetailsList[i]!);
+      //   } else {
+      //     logger.e('Product details not found ID: ${favoriteProductIds[i]}');
+      //   }
+      // }
+
+      List<Product> validProductDetails =
+          productDetailsList.where((product) => product != null).cast<Product>().toList();
+
+      return validProductDetails;
     }
 
     return [];
+  }
+
+  Stream<List<Product>> fetchFavoriteProductDetailsStream() async* {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      DocumentReference userDocRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+      CollectionReference savedRef = userDocRef.collection('saved');
+
+      await for (QuerySnapshot snapshot in savedRef.snapshots()) {
+        List<String> favoriteProductIds = snapshot.docs.map((savedID) => savedID.id).toList();
+
+        List<Future<Product?>> productDetailsFutures = favoriteProductIds.map((productId) {
+          return fetchProductDetails(productId);
+        }).toList();
+        await Future.delayed(Duration(milliseconds: 1000));
+
+        // Wait for all futures to complete
+        List<Product?> productDetailsList = await Future.wait(productDetailsFutures);
+
+        // Filter out null product details
+        List<Product> validProductDetails =
+            productDetailsList.where((product) => product != null).cast<Product>().toList();
+
+        yield validProductDetails;
+      }
+    }
+    yield []; // Return an empty list if user is null or other conditions are not met
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: secondCont,
-      padding: EdgeInsets.only(bottom: 80),
-      child: FutureBuilder<List<Product>>(
-        future: fetchFavoriteProductDetails(),
+      padding: const EdgeInsets.only(bottom: 80),
+      child: StreamBuilder<List<Product>>(
+        stream: fetchFavoriteProductDetailsStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -73,42 +127,60 @@ class _FavPageState extends State<FavPage> {
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Text('No saved products found.');
+            return const Center(child: Text('No saved products found.'));
           }
 
           List<Product> favoriteProducts = snapshot.data!;
 
-          // return MasonryGridView.count(
-          //   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          //   crossAxisCount: 2,
-          //   itemCount: products.length,
-          //   itemBuilder: (context, index) {
-          //     Product product = favoriteProducts[index];
-          //     return ProductItem(product);
-          //   },
-          //   mainAxisSpacing: 4.0,
-          //   crossAxisSpacing: 4.0,
-          // );
-          return GridView.builder(
-            padding: EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 12,
-            ),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 8.0,
-              crossAxisSpacing: 8.0,
-              childAspectRatio: 2 / 3,
-            ),
+          return MasonryGridView.count(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            crossAxisCount: 2,
             itemCount: favoriteProducts.length,
             itemBuilder: (context, index) {
-              Product product = favoriteProducts[index];
-
+              final product = favoriteProducts[index];
               return ProductItem(product);
             },
+            mainAxisSpacing: 4.0,
+            crossAxisSpacing: 4.0,
           );
         },
       ),
     );
+
+    //       FutureBuilder<List<Product>>(
+    //     future: fetchFavoriteProductDetails(),
+    //     builder: (context, snapshot) {
+    //       if (snapshot.connectionState == ConnectionState.waiting) {
+    //         return Center(
+    //           child: CircularProgressIndicator(
+    //             color: cont,
+    //           ),
+    //         );
+    //       }
+
+    //       if (snapshot.hasError) {
+    //         return Text('Error: ${snapshot.error}');
+    //       }
+
+    //       if (!snapshot.hasData || snapshot.data!.isEmpty) {
+    //         return const Text('No saved products found.');
+    //       }
+
+    //       List<Product> favoriteProducts = snapshot.data!;
+
+    //       return MasonryGridView.count(
+    //         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+    //         crossAxisCount: 2,
+    //         itemCount: favoriteProducts.length,
+    //         itemBuilder: (context, index) {
+    //           final product = favoriteProducts[index];
+    //           return ProductItem(product);
+    //         },
+    //         mainAxisSpacing: 4.0,
+    //         crossAxisSpacing: 4.0,
+    //       );
+    //     },
+    //   ),
+    // );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:b_sell/main.dart';
-import 'package:b_sell/popup_screens.dart/mobile_otp.dart';
+import 'package:b_sell/screens/popup_screens.dart/mobile_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -77,44 +77,45 @@ class _MobileNumberState extends State<MobileNumber> {
         children: [
           // LOGO CONTAINER
           Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: 300,
-                decoration: const BoxDecoration(
-                    image: DecorationImage(
-                  image: AssetImage(
-                    "images/blogo2.gif",
-                  ),
-                )),
-                child: Container(
-                  color: Colors.lightBlueAccent.withOpacity(0.05),
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 90, left: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              Navigator.pushReplacement(
-                                  context, MaterialPageRoute(builder: (BuildContext context) => super.widget));
-                            });
-                          },
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: Colors.indigo[300],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                      ],
-                    ),
-                  ),
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 300,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                image: AssetImage(
+                  "images/blogo2.gif",
                 ),
               )),
+              child: Container(
+                color: Colors.lightBlueAccent.withOpacity(0.05),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 90, left: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            Navigator.pushReplacement(
+                                context, MaterialPageRoute(builder: (BuildContext context) => super.widget));
+                          });
+                        },
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: Colors.indigo[300],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
           buildBottomHalfContainerPositioned(true, phonenumber.text),
           //LOGIN CONTAINER
           AnimatedPositioned(
