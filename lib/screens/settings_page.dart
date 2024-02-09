@@ -91,7 +91,14 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     // ignore: prefer_const_constructors
     return Container(
-      color: secondCont,
+      // color: secondCont,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+        color: white,
+      ),
       child: AnimatedBuilder(
           animation: _animation,
           builder: (_, child) {

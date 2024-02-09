@@ -53,45 +53,43 @@ class _LayoutState extends State<Layout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: cont,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        title: Text(
-          getTitle(_currentIndex),
-          style: TextStyle(
-            color: secondCont,
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: cont,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.favorite),
-            color: secondCont,
-          ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                search = !search;
-              });
-            },
-            icon: Icon(Icons.search),
-            color: secondCont,
-          ),
-        ],
+      backgroundColor: Colors.black,
+      // _currentIndex != 0 ?
+      appBar: _currentIndex != 0
+          ? AppBar(
+              scrolledUnderElevation: 0,
+              toolbarHeight: MediaQuery.of(context).size.height * 0.2,
+              centerTitle: true,
+              title: Image.asset(
+                'images/logo.png',
+                // scale: 0.01,
+                height: MediaQuery.of(context).size.height * 0.12,
+              ),
+              // Container(
+              //   padding: EdgeInsets.all(8),
+              //   child: Icon(
+              //     Icons.diamond,
+              //     color: Colors.white,
+              //     size: 30,
+              //   ),
+              // ),
+              elevation: 0,
+              backgroundColor: Colors.black,
+            )
+          : null,
+      body: Container(
+        child: _pages[_currentIndex],
       ),
-      body: _pages[_currentIndex],
       extendBody: true,
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: AnimatedNotchBottomBar(
-        itemLabelStyle: TextStyle(color: secondCont, fontSize: 12),
+        itemLabelStyle: TextStyle(color: white, fontSize: 12),
         kIconSize: 24,
         notchBottomBarController: notchBottomBarController,
         kBottomRadius: 0,
         removeMargins: true,
-        color: cont,
-        notchColor: secondCont,
+        color: Colors.black,
+        notchColor: white,
         onTap: (index) {
           setState(() {
             _currentIndex = index;
@@ -101,11 +99,11 @@ class _LayoutState extends State<Layout> {
           BottomBarItem(
             inActiveItem: Icon(
               Icons.home,
-              color: secondCont,
+              color: white,
             ),
             activeItem: Icon(
               Icons.home_filled,
-              color: cont,
+              color: Colors.black,
             ),
             itemLabel: 'Home',
             // icon: Icons.home,
@@ -114,22 +112,22 @@ class _LayoutState extends State<Layout> {
           BottomBarItem(
             inActiveItem: Icon(
               Icons.favorite,
-              color: secondCont,
+              color: white,
             ),
             activeItem: Icon(
               Icons.favorite,
-              color: cont,
+              color: Colors.black,
             ),
-            itemLabel: 'Fav',
+            itemLabel: 'Saved',
           ),
           BottomBarItem(
             inActiveItem: Icon(
               Icons.settings,
-              color: secondCont,
+              color: white,
             ),
             activeItem: Icon(
               Icons.settings,
-              color: cont,
+              color: Colors.black,
             ),
             itemLabel: 'Settings',
           ),

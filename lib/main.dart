@@ -64,6 +64,7 @@
 // // }
 
 //---------------------------------------------------------------------------
+import 'package:b_sell/appcolors.dart';
 import 'package:b_sell/bloc/search_bloc.dart';
 import 'package:b_sell/firebase_options.dart';
 import 'package:b_sell/screens/splash_screen.dart';
@@ -92,22 +93,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => SearchBloc()),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSwatch(
-                  // primarySwatch: Colors.blue,
-                  )
-              .copyWith(
-            background: Color.fromARGB(255, 206, 214, 230),
-          ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(
+                // primarySwatch: Colors.blue,
+                )
+            .copyWith(
+          background: white,
         ),
-        home: SplashScreen(),
       ),
+      home: SplashScreen(),
     );
   }
 }

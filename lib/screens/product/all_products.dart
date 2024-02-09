@@ -53,72 +53,85 @@ class _AllProductsState extends State<AllProducts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: secondCont,
+      backgroundColor: white,
       appBar: AppBar(
         // title: Text('Product Page'),
         automaticallyImplyLeading: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('products').snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child: CircularProgressIndicator(
-                color: cont,
-              ));
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              final products = snapshot.data!.docs
-                  .map((doc) => Product(
-                        id: doc.id,
-                        name: doc['name'],
-                        price: doc['price'],
-                        description: doc['description'],
-                        type: doc['type'],
-                        imageUrl: doc['image_url'],
-                        likesCount: doc['likesCount'],
-                      ))
-                  .toList();
+      // extendBodyBehindAppBar: true,
+      body: Column(
+        children: [
+          // SizedBox(
+          //   height: 100,
+          // ),
+          Expanded(
+            child: StreamBuilder(
+                stream: FirebaseFirestore.instance.collection('products').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                        child: CircularProgressIndicator(
+                      color: cont,
+                    ));
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    final products = snapshot.data!.docs
+                        .map((doc) => Product(
+                              id: doc.id,
+                              name: doc['name'],
+                              grams: doc['grams'].toDouble(),
+                              description: doc['description'],
+                              type: doc['type'],
+                              imageUrl: doc['image_url'],
+                              gst: doc['gst'].toDouble(),
+                              otherCharges: doc['other_charges'].toDouble(),
+                              likesCount: doc['likesCount'],
+                              savesCount: doc['savesCount'],
+                            ))
+                        .toList();
 
-              return MasonryGridView.count(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                crossAxisCount: 2,
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return ProductItem(product);
-                },
-                mainAxisSpacing: 4.0,
-                crossAxisSpacing: 4.0,
-              );
-              // GridView.builder(
-              //   padding: EdgeInsets.symmetric(horizontal: 10),
-              //   controller: _scrollController,
-              //   itemCount: isLoading ? products.length + 1 : products.length,
-              //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              //     crossAxisCount: 2,
-              //     mainAxisSpacing: 8.0,
-              //     crossAxisSpacing: 8.0,
-              //     childAspectRatio: 2 / 3,
-              //   ),
-              //   itemBuilder: (BuildContext context, int index) {
-              //     if (index == products.length) {
-              //       return Center(
-              //         child: CircularProgressIndicator(
-              //           color: cont,
-              //         ),
-              //       );
-              //     } else {
-              //       final product = products[index];
-              //       return ProductItem(product);
-              //     }
-              //   },
-              // );
-            }
-          }),
+                    return MasonryGridView.count(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      crossAxisCount: 2,
+                      itemCount: products.length,
+                      itemBuilder: (context, index) {
+                        final product = products[index];
+                        return ProductItem(product);
+                      },
+                      mainAxisSpacing: 4.0,
+                      crossAxisSpacing: 4.0,
+                    );
+                    // GridView.builder(
+                    //   padding: EdgeInsets.symmetric(horizontal: 10),
+                    //   controller: _scrollController,
+                    //   itemCount: isLoading ? products.length + 1 : products.length,
+                    //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    //     crossAxisCount: 2,
+                    //     mainAxisSpacing: 8.0,
+                    //     crossAxisSpacing: 8.0,
+                    //     childAspectRatio: 2 / 3,
+                    //   ),
+                    //   itemBuilder: (BuildContext context, int index) {
+                    //     if (index == products.length) {
+                    //       return Center(
+                    //         child: CircularProgressIndicator(
+                    //           color: cont,
+                    //         ),
+                    //       );
+                    //     } else {
+                    //       final product = products[index];
+                    //       return ProductItem(product);
+                    //     }
+                    //   },
+                    // );
+                  }
+                }),
+          ),
+        ],
+      ),
     );
   }
 }

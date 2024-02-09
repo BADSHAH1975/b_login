@@ -15,9 +15,7 @@ class FavPage extends StatefulWidget {
 }
 
 class _FavPageState extends State<FavPage> {
-  // List<String> products = List.generate(5, (index) => 'Product $index');
   bool isLoading = false;
-  // ScrollController _scrollController = ScrollController();
 
   Future<Product> fetchProductDetails(String productId) async {
     final firestore = FirebaseFirestore.instance;
@@ -28,18 +26,17 @@ class _FavPageState extends State<FavPage> {
       await firestore.collection('users').doc(user!.uid).collection('saved').doc(productId).delete();
     }
 
-    // Future.delayed(
-    //   Duration(milliseconds: 100),
-    // );
     return Product(
-      id: productId,
-      name: productSnapshot['name'] ?? '',
-      price: productSnapshot['price'].toDouble() ?? 0.0,
-      description: productSnapshot['description'] ?? '',
-      type: productSnapshot['type'] ?? '',
-      imageUrl: productSnapshot['image_url'] ?? '',
-      likesCount: productSnapshot['likesCount'] ?? '',
-    );
+        id: productId,
+        name: productSnapshot['name'] ?? '',
+        grams: productSnapshot['grams'].toDouble() ?? 0.0,
+        description: productSnapshot['description'] ?? '',
+        type: productSnapshot['type'] ?? '',
+        imageUrl: productSnapshot['image_url'] ?? '',
+        gst: productSnapshot['gst'] ?? 0,
+        otherCharges: productSnapshot['other_charges'] ?? 0,
+        likesCount: productSnapshot['likesCount'] ?? '',
+        savesCount: productSnapshot['savesCount'] ?? '');
   }
 
   Future<List<Product>> fetchFavoriteProductDetails() async {
@@ -109,7 +106,13 @@ class _FavPageState extends State<FavPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: secondCont,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+        color: white,
+      ),
       padding: const EdgeInsets.only(bottom: 80),
       child: StreamBuilder<List<Product>>(
         stream: fetchFavoriteProductDetailsStream(),
