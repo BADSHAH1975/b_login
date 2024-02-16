@@ -5,6 +5,7 @@ import 'package:b_sell/screens/home_page.dart';
 import 'package:b_sell/screens/fav_page.dart';
 import 'package:b_sell/screens/settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 // import 'package:google_nav_bar/google_nav_bar.dart';
 
 class Layout extends StatefulWidget {
@@ -52,87 +53,99 @@ class _LayoutState extends State<Layout> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      // _currentIndex != 0 ?
-      appBar: _currentIndex != 0
-          ? AppBar(
-              scrolledUnderElevation: 0,
-              toolbarHeight: MediaQuery.of(context).size.height * 0.2,
-              centerTitle: true,
-              title: Image.asset(
-                'images/logo.png',
-                // scale: 0.01,
-                height: MediaQuery.of(context).size.height * 0.12,
-              ),
-              // Container(
-              //   padding: EdgeInsets.all(8),
-              //   child: Icon(
-              //     Icons.diamond,
-              //     color: Colors.white,
-              //     size: 30,
-              //   ),
-              // ),
-              elevation: 0,
-              backgroundColor: Colors.black,
-            )
-          : null,
-      body: Container(
-        child: _pages[_currentIndex],
-      ),
-      extendBody: true,
-      resizeToAvoidBottomInset: false,
-      bottomNavigationBar: AnimatedNotchBottomBar(
-        itemLabelStyle: TextStyle(color: white, fontSize: 12),
-        kIconSize: 24,
-        notchBottomBarController: notchBottomBarController,
-        kBottomRadius: 0,
-        removeMargins: true,
-        color: Colors.black,
-        notchColor: white,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        bottomBarItems: [
-          BottomBarItem(
-            inActiveItem: Icon(
-              Icons.home,
-              color: white,
-            ),
-            activeItem: Icon(
-              Icons.home_filled,
-              color: Colors.black,
-            ),
-            itemLabel: 'Home',
-            // icon: Icons.home,
-            // text: 'Home',
+    return ResponsiveBuilder(
+      builder: (context, sizingInformation) {
+        return Scaffold(
+          backgroundColor: Colors.black,
+          // _currentIndex != 0 ?
+          appBar: _currentIndex != 0
+              ? AppBar(
+                  scrolledUnderElevation: 0,
+                  toolbarHeight: MediaQuery.of(context).size.height * 0.2,
+                  centerTitle: true,
+                  title: Image.asset(
+                    'images/logo.png',
+                    // scale: 0.01,
+                    height: MediaQuery.of(context).size.height * 0.12,
+                  ),
+                  // Container(
+                  //   padding: EdgeInsets.all(8),
+                  //   child: Icon(
+                  //     Icons.diamond,
+                  //     color: Colors.white,
+                  //     size: 30,
+                  //   ),
+                  // ),
+                  elevation: 0,
+                  backgroundColor: Colors.black,
+                )
+              : null,
+          body: Container(
+            height: MediaQuery.of(context).size.height,
+            child: _pages[_currentIndex],
           ),
-          BottomBarItem(
-            inActiveItem: Icon(
-              Icons.favorite,
-              color: white,
-            ),
-            activeItem: Icon(
-              Icons.favorite,
+          extendBody: true,
+          resizeToAvoidBottomInset: false,
+          bottomNavigationBar: SizedBox(
+            height: MediaQuery.of(context).size.height >= 800
+                ? MediaQuery.of(context).size.height * 0.2
+                : MediaQuery.of(context).size.height * 0.115,
+            child: AnimatedNotchBottomBar(
+              showLabel: MediaQuery.of(context).size.height >= 800 ? true : false,
+              itemLabelStyle: TextStyle(color: white, fontSize: 12),
+              kIconSize: MediaQuery.of(context).size.height >= 800 ? 24 : 20,
+              notchBottomBarController: notchBottomBarController,
+              bottomBarWidth: MediaQuery.of(context).size.width * 0.5,
+              kBottomRadius: 0,
+              removeMargins: true,
               color: Colors.black,
+              notchColor: white,
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              bottomBarItems: [
+                BottomBarItem(
+                  inActiveItem: Icon(
+                    Icons.home,
+                    color: white,
+                  ),
+                  activeItem: Icon(
+                    Icons.home_filled,
+                    color: Colors.black,
+                  ),
+                  itemLabel: 'Home',
+                  // icon: Icons.home,
+                  // text: 'Home',
+                ),
+                BottomBarItem(
+                  inActiveItem: Icon(
+                    Icons.favorite,
+                    color: white,
+                  ),
+                  activeItem: Icon(
+                    Icons.favorite,
+                    color: Colors.black,
+                  ),
+                  itemLabel: 'Saved',
+                ),
+                BottomBarItem(
+                  inActiveItem: Icon(
+                    Icons.settings,
+                    color: white,
+                  ),
+                  activeItem: Icon(
+                    Icons.settings,
+                    color: Colors.black,
+                  ),
+                  itemLabel: 'Settings',
+                ),
+              ],
             ),
-            itemLabel: 'Saved',
           ),
-          BottomBarItem(
-            inActiveItem: Icon(
-              Icons.settings,
-              color: white,
-            ),
-            activeItem: Icon(
-              Icons.settings,
-              color: Colors.black,
-            ),
-            itemLabel: 'Settings',
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

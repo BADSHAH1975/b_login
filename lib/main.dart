@@ -68,11 +68,16 @@ import 'package:b_sell/appcolors.dart';
 import 'package:b_sell/bloc/search_bloc.dart';
 import 'package:b_sell/firebase_options.dart';
 import 'package:b_sell/screens/splash_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,8 +86,81 @@ void main() async {
   );
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   firestore.settings = Settings(persistenceEnabled: true);
-  runApp(MyApp());
+  // await hasLocationPermission();
+  if (await hasLocationPermission()) {
+    runApp(
+      DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => MyApp(),
+      ),
+    );
+  } else {
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    // Fluttertoast.showToast(msg: 'Provide location permission');
+  }
 }
+
+Future<bool> hasLocationPermission() async {
+  var status = await Permission.location.status;
+  if (status.isGranted) {
+    return true;
+  } else if (status.isPermanentlyDenied) {
+    await openAppSettings();
+    Fluttertoast.showToast(msg: 'Provide location permission');
+
+    return false;
+  } else {
+    final result = await Permission.location.request();
+    if (result.isGranted) {
+      return true;
+    } else {
+      Fluttertoast.showToast(msg: 'Provide location permission');
+      return false;
+    }
+// await Permission.location.request();
+    // return await hasLocationPermission(); // Retry
+    // return SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    // return false;
+  }
+}
+
+// Future<bool> hasLocationPermission() async {
+//   var status = await Permission.location.status;
+//   if (status.isGranted) {
+//     return true;
+//   } else if (status.isPermanentlyDenied) {
+//     // User has permanently denied location permission
+//     await openAppSettings(); // Open app settings for user action
+//     return false;
+//   } else {
+//     // Request permission or explain why it's needed
+//     final result = await Permission.location.request();
+//     if (result.isGranted) {
+//       return true;
+//     } else {
+//       // Provide clear rationale and options
+//       showDialog(
+//         // context: navigatorKey.currentContext!, // Use your navigator key
+//         context: ,
+//         builder: (context) => AlertDialog(
+//           title: Text('Location Permission Required'),
+//           content: Text('This app needs location permission to access features like nearby stores. If you deny, you can still use the app, but some features may be unavailable.'),
+//           actions: [
+//             TextButton(
+//               onPressed: () => SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+//               child: Text('Continue without location'),
+//             ),
+//             TextButton(
+//               onPressed: () => openAppSettings(),
+//               child: Text('Go to app settings'),
+//             ),
+//           ],
+//         ),
+//       );
+//       return false; // Keep app open for now
+//     }
+//   }
+// }
 
 final Logger logger = Logger(
   printer: PrettyPrinter(),

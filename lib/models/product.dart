@@ -11,6 +11,8 @@ class Product {
   final double otherCharges;
   final int likesCount;
   final int savesCount;
+  final int sharesCount;
+  final String category;
 
   Product({
     required this.id,
@@ -23,20 +25,24 @@ class Product {
     required this.otherCharges,
     required this.likesCount,
     required this.savesCount,
+    required this.sharesCount,
+    required this.category,
   });
 
   factory Product.fromSnapshot(DocumentSnapshot snapshot) {
     return Product(
-        id: snapshot.id,
-        name: snapshot['name'],
-        grams: snapshot['grams'],
-        description: snapshot['description'],
-        type: snapshot['type'],
-        imageUrl: snapshot['image_url'],
-        gst: snapshot['gst'],
-        otherCharges: snapshot['otherCharges'],
-        likesCount: snapshot['likesCount'],
-        savesCount: snapshot['savesCount'],
+      id: snapshot.id,
+      name: snapshot['name'],
+      grams: snapshot['grams'].toDouble(),
+      description: snapshot['description'],
+      type: snapshot['type'],
+      imageUrl: snapshot['image_url'],
+      gst: snapshot['gst'].toDouble(),
+      otherCharges: snapshot['other_charges'].toDouble(),
+      likesCount: snapshot['likesCount'],
+      savesCount: snapshot['savesCount'],
+      sharesCount: snapshot['sharesCount'],
+      category: snapshot['category'],
     );
   }
 }

@@ -27,16 +27,19 @@ class _FavPageState extends State<FavPage> {
     }
 
     return Product(
-        id: productId,
-        name: productSnapshot['name'] ?? '',
-        grams: productSnapshot['grams'].toDouble() ?? 0.0,
-        description: productSnapshot['description'] ?? '',
-        type: productSnapshot['type'] ?? '',
-        imageUrl: productSnapshot['image_url'] ?? '',
-        gst: productSnapshot['gst'] ?? 0,
-        otherCharges: productSnapshot['other_charges'] ?? 0,
-        likesCount: productSnapshot['likesCount'] ?? '',
-        savesCount: productSnapshot['savesCount'] ?? '');
+      id: productId,
+      name: productSnapshot['name'] ?? '',
+      grams: productSnapshot['grams'].toDouble() ?? 0.0,
+      description: productSnapshot['description'] ?? '',
+      type: productSnapshot['type'] ?? '',
+      imageUrl: productSnapshot['image_url'] ?? '',
+      gst: productSnapshot['gst'].toDouble() ?? 0,
+      otherCharges: productSnapshot['other_charges'].toDouble() ?? 0,
+      likesCount: productSnapshot['likesCount'] ?? '',
+      savesCount: productSnapshot['savesCount'] ?? '',
+      sharesCount: productSnapshot['sharesCount'] ?? '',
+      category: productSnapshot['category'] ?? '',
+    );
   }
 
   Future<List<Product>> fetchFavoriteProductDetails() async {
@@ -126,7 +129,7 @@ class _FavPageState extends State<FavPage> {
           }
 
           if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {

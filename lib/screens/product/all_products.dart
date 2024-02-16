@@ -90,6 +90,8 @@ class _AllProductsState extends State<AllProducts> {
                               otherCharges: doc['other_charges'].toDouble(),
                               likesCount: doc['likesCount'],
                               savesCount: doc['savesCount'],
+                              sharesCount: doc['sharesCount'],
+                              category: doc['category'],
                             ))
                         .toList();
 

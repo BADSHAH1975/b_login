@@ -1,10 +1,14 @@
+import 'dart:math';
+
 import 'package:b_sell/appcolors.dart';
 import 'package:b_sell/bloc/search_bloc.dart';
 import 'package:b_sell/models/product.dart';
 import 'package:b_sell/screens/product/all_products.dart';
+import 'package:b_sell/screens/product/product_in_pageview.dart';
 import 'package:b_sell/screens/product/product_item.dart';
 import 'package:b_sell/screens/product/products_search_item.dart';
 import 'package:b_sell/widgets/card_stack_page_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart' hide BoxShadow, BoxDecoration;
@@ -34,7 +38,21 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   final PageController _pageController = PageController();
 
   late TabController _tabController;
-  final List<String> categories = ['Exclusive', 'Trending', 'Most Liked'];
+  final List<String> categories = ['Our Stores', 'Exclusive', 'Most Liked'];
+  final List<String> imageRoutes = [
+    'images/front.png',
+    'images/store1.png',
+    'images/store2.png',
+    'images/store3.png',
+    'images/store4.png',
+    'images/store5.png',
+    'images/store6.png',
+    'images/store7.png',
+    'images/store8.png',
+    'images/store9.png',
+    'images/store10.png',
+    'images/store11.png',
+  ];
 
   String _query = '';
   int _currentIndex = 0;
@@ -65,7 +83,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     // ignore: prefer_const_constructors
     return ResponsiveBuilder(
       builder: (_, sizingInformation) => Padding(
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric(vertical: 0),
         child: Container(
           // padding: EdgeInsets.symmetric(vertical: 10),
           // color: white,
@@ -95,10 +113,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             padding: EdgeInsets.zero,
                             tabAlignment: TabAlignment.fill,
                             indicatorWeight: 3.0,
-
                             indicatorPadding: EdgeInsets.all(6),
                             controller: _tabController,
-                            // isScrollable: true,
                             indicatorSize: TabBarIndicatorSize.tab,
                             indicatorColor: gold,
                             labelPadding: const EdgeInsets.symmetric(horizontal: 14.0),
@@ -119,102 +135,386 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             ),
                           ),
                           Expanded(
-                            child: PageView(
-                              physics: NeverScrollableScrollPhysics(),
-                              controller: _pageController,
-                              onPageChanged: (index) {
-                                setState(() {
-                                  _tabController.animateTo(index);
-                                });
-                              },
-                              children: categories.map((category) {
-                                return Center(
-                                  child: Swiper(
-                                    itemBuilder: (BuildContext context, int index) {
-                                      return Container(
-                                        color: black,
-                                      );
-                                      // Image.network(
-                                      //   "https://via.placeholder.com/288x188",
-                                      //   color: black,
-                                      //   fit: BoxFit.fill,
-                                      // );
-                                    },
-                                    itemCount: 2,
-                                    itemWidth: 200.0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 4.0, bottom: 12.0),
+                              child: PageView(
+                                physics: NeverScrollableScrollPhysics(),
+                                controller: _pageController,
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    _tabController.animateTo(index);
+                                  });
+                                },
+                                children: [
+                                  Swiper(
+                                    itemCount: imageRoutes.length,
+                                    loop: false,
+                                    axisDirection: AxisDirection.right,
+                                    itemWidth: MediaQuery.of(context).size.width * 0.85,
                                     layout: SwiperLayout.STACK,
+                                    itemBuilder: (_, index) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                            // borderRadius: BorderRadius.circular(20),
+                                            ),
+                                        child: Image.asset(
+                                          imageRoutes[index],
+                                        ),
+                                      );
+                                    },
                                   ),
-                                  //     CardStackPageView(
-                                  //   cardDistance: 20.0, // Adjust distance between cards
-                                  //   perspective: 0.003, // Increase for stronger 3D effect
-                                  //   cards: [
-                                  //     Container(
-                                  //       height: 120,
-                                  //       width: 100,
-                                  //       color: black,
-                                  //     ),
-                                  //     Container(
-                                  //       height: 120,
-                                  //       width: 100,
-                                  //       color: black,
-                                  //     ),
-                                  //   ],
-                                  // )
-                                  //     Text(
-                                  //   'Content for category: $category',
-                                  //   style: const TextStyle(fontSize: 20.0),
+                                  // StreamBuilder(
+                                  //   stream: FirebaseFirestore.instance.collection('products').snapshots(),
+                                  //   builder: (context, snapshot) {
+                                  //     if (snapshot.connectionState == ConnectionState.waiting) {
+                                  //       return Center(
+                                  //         child: CircularProgressIndicator(),
+                                  //       );
+                                  //     }
+                                  //     if (snapshot.hasError) {
+                                  //       return Text('Error: ${snapshot.error}');
+                                  //     }
+                                  //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                  //       return Text('No data available');
+                                  //     }
+
+                                  //     final products =
+                                  //         snapshot.data!.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+
+                                  //     final random = Random();
+                                  //     products.shuffle(random);
+
+                                  //     return Swiper(
+                                  //       itemBuilder: (BuildContext context, int index) {
+                                  //         if (index < 3 && index < products.length) {
+                                  //           return ProductInPageView(product: products[index]);
+                                  //         } else if (index == 3) {
+                                  //           return GestureDetector(
+                                  //             onTap: () {
+                                  //               Navigator.push(
+                                  //                   context, MaterialPageRoute(builder: (_) => AllProducts()));
+                                  //             },
+                                  //             child: Stack(
+                                  //               children: [
+                                  //                 Center(
+                                  //                   child: Image.asset(
+                                  //                     'images/diamondring.png',
+                                  //                     fit: BoxFit.fill,
+                                  //                   ),
+                                  //                 ),
+                                  //                 Container(
+                                  //                   decoration: BoxDecoration(
+                                  //                     color: Colors.black.withOpacity(0.5),
+                                  //                   ),
+                                  //                   child: Center(
+                                  //                     child: Text(
+                                  //                       'View More',
+                                  //                       style: GoogleFonts.poppins(
+                                  //                         color: white,
+                                  //                         fontSize: 22,
+                                  //                       ),
+                                  //                     ),
+                                  //                   ),
+                                  //                 ),
+                                  //               ],
+                                  //             ),
+                                  //           );
+                                  //         } else {
+                                  //           return Container();
+                                  //         }
+                                  //       },
+                                  //       itemCount: products.length > 3 ? 4 : products.length + 1,
+                                  //       loop: false,
+                                  //       axisDirection: AxisDirection.right,
+                                  //       itemWidth: 220.0,
+                                  //       layout: SwiperLayout.STACK,
+                                  //     );
+                                  //   },
                                   // ),
-                                );
-                              }).toList(),
+                                  StreamBuilder(
+                                    stream: FirebaseFirestore.instance.collection('products').snapshots(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      }
+                                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                        return Text('No data available');
+                                      }
+
+                                      final products =
+                                          snapshot.data!.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+
+                                      // Shuffle the list of products
+                                      final random = Random();
+                                      products.shuffle(random);
+
+                                      return Swiper(
+                                        itemBuilder: (BuildContext context, int index) {
+                                          if (index < 3 && index < products.length) {
+                                            return ProductInPageView(product: products[index]);
+                                          } else if (index == 3) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context, MaterialPageRoute(builder: (_) => AllProducts()));
+                                              },
+                                              child: Stack(
+                                                children: [
+                                                  Center(
+                                                    child: Image.asset(
+                                                      'images/diamondring.png',
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.black.withOpacity(0.5),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        'View More',
+                                                        style: GoogleFonts.poppins(
+                                                          color: white,
+                                                          fontSize: 22,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        },
+                                        itemCount: products.length > 3 ? 4 : products.length + 1,
+                                        loop: false,
+                                        axisDirection: AxisDirection.right,
+                                        itemWidth: 220.0,
+                                        layout: SwiperLayout.STACK,
+                                      );
+                                    },
+                                  ),
+                                  StreamBuilder(
+                                    stream: FirebaseFirestore.instance.collection('products').snapshots(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                      if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      }
+                                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                                        return Text('No data available');
+                                      }
+
+                                      final products =
+                                          snapshot.data!.docs.map((doc) => Product.fromSnapshot(doc)).toList();
+
+                                      // Shuffle the list of products
+                                      final random = Random();
+                                      products.shuffle(random);
+
+                                      return Swiper(
+                                        itemBuilder: (BuildContext context, int index) {
+                                          if (index < 3 && index < products.length) {
+                                            return ProductInPageView(product: products[index]);
+                                          } else if (index == 3) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context, MaterialPageRoute(builder: (_) => AllProducts()));
+                                              },
+                                              child: Stack(
+                                                children: [
+                                                  Center(
+                                                    child: Image.asset(
+                                                      'images/diamondring.png',
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.black.withOpacity(0.5),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        'View More',
+                                                        style: GoogleFonts.poppins(
+                                                          color: white,
+                                                          fontSize: 22,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        },
+                                        itemCount: products.length > 3 ? 4 : products.length + 1,
+                                        loop: false,
+                                        axisDirection: AxisDirection.right,
+                                        itemWidth: 300.0,
+                                        layout: SwiperLayout.STACK,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.15,
+                            height: MediaQuery.of(context).size.height * 0.12,
                             child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Container(
-                                    // height: 190,
-                                    width: 120,
-                                    decoration: BoxDecoration(
-                                      color: black,
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      // image: DecorationImage(
-                                      //   image: AssetImage('images/diamondring.png'),
-                                      //   fit: BoxFit.fill,
-                                      // ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (_) => AllProducts()));
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        Image.asset(
+                                          'images/diamondring.png',
+                                          height: MediaQuery.of(context).size.height * 0.12,
+                                          width: MediaQuery.of(context).size.height * 0.12,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        Container(
+                                          height: MediaQuery.of(context).size.height * 0.12,
+                                          width: MediaQuery.of(context).size.height * 0.12,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.5),
+                                            // borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'See All',
+                                              style: GoogleFonts.poppins(
+                                                color: white,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Container(
-                                    height: 120,
-                                    width: 120,
-                                    decoration: BoxDecoration(
-                                      color: black,
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      // image: DecorationImage(
-                                      //   image: AssetImage('images/diamondring.png'),
-                                      //   fit: BoxFit.fill,
-                                      // ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (_) => AllProducts()));
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        Image.asset(
+                                          'images/jeww.png',
+                                          height: MediaQuery.of(context).size.height * 0.12,
+                                          width: MediaQuery.of(context).size.height * 0.12,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        Container(
+                                          height: MediaQuery.of(context).size.height * 0.12,
+                                          width: MediaQuery.of(context).size.height * 0.12,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.5),
+                                            // borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Rings',
+                                              style: GoogleFonts.poppins(
+                                                color: white,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Container(
-                                    height: 120,
-                                    width: 120,
-                                    decoration: BoxDecoration(
-                                      color: black,
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      // image: DecorationImage(
-                                      //   image: AssetImage('images/diamondring.png'),
-                                      //   fit: BoxFit.fill,
-                                      // ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (_) => AllProducts()));
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        Image.asset(
+                                          'images/jew.png',
+                                          height: MediaQuery.of(context).size.height * 0.12,
+                                          width: MediaQuery.of(context).size.height * 0.12,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        Container(
+                                          height: MediaQuery.of(context).size.height * 0.12,
+                                          width: MediaQuery.of(context).size.height * 0.12,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.5),
+                                            // borderRadius: BorderRadius.circular(18),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Bracelet',
+                                              style: GoogleFonts.poppins(
+                                                color: white,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (_) => AllProducts()));
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        Image.asset(
+                                          'images/necklace.png',
+                                          height: MediaQuery.of(context).size.height * 0.12,
+                                          width: MediaQuery.of(context).size.height * 0.12,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        Container(
+                                          height: MediaQuery.of(context).size.height * 0.12,
+                                          width: MediaQuery.of(context).size.height * 0.12,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.5),
+                                            // borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Necklace',
+                                              style: GoogleFonts.poppins(
+                                                color: white,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -222,7 +522,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             ),
                           ),
                           SizedBox(
-                            height: 95,
+                            height: MediaQuery.of(context).size.height * 0.12,
                           ),
                         ],
                       ),

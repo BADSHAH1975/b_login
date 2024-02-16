@@ -11,13 +11,13 @@ class SplashScreen extends StatelessWidget {
     return AnimatedSplashScreen(
       backgroundColor: Colors.black,
       splash: Image.asset(
-        'images/blogo1.png',
+        'images/logo.png',
         fit: BoxFit.cover,
       ),
-      splashIconSize: 600,
+      splashIconSize: 150,
       nextScreen: AuthenticationWrapper(),
       splashTransition: SplashTransition.scaleTransition,
-      duration: 200,
+      duration: 400,
     );
   }
 }

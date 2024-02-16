@@ -9,7 +9,8 @@ import 'package:sms_autofill/sms_autofill.dart';
 
 class MobileOtp extends StatefulWidget {
   final String otp;
-  const MobileOtp({super.key, required this.otp});
+  final String number;
+  const MobileOtp({super.key, required this.otp, required this.number});
 
   @override
   State<MobileOtp> createState() => _MobileOtpState();
@@ -157,8 +158,8 @@ class _MobileOtpState extends State<MobileOtp> {
                       children: [
                         Column(
                           children: [
-                            const Text(
-                              "Mobile Number OTP",
+                            Text(
+                              '+91 ${widget.number}',
                               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
                             ),
                             Container(
@@ -254,60 +255,62 @@ class _MobileOtpState extends State<MobileOtp> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           SizedBox(
-              width: 300,
+              // width: 400,
               child: Column(
-                children: [
-                  // PinFieldAutoFill(
-                  //   decoration:
-                  //   BoxLooseDecoration(
-                  //     // shape: BoxShape.circle,
-                  //     // color: Colors.indigo[100],
-                  //     // border: Border.all(color: Colors.blue.withOpacity(0.5), width: 2,
-                  //     strokeColorBuilder: PinListenColorBuilder(Colors.black, Colors.black26),
-                  //     bgColorBuilder: const FixedColorBuilder(Colors.black),
-                  //     strokeWidth: 2,
+            children: [
+              // PinFieldAutoFill(
+              //   decoration:
+              //   BoxLooseDecoration(
+              //     // shape: BoxShape.circle,
+              //     // color: Colors.indigo[100],
+              //     // border: Border.all(color: Colors.blue.withOpacity(0.5), width: 2,
+              //     strokeColorBuilder: PinListenColorBuilder(Colors.black, Colors.black26),
+              //     bgColorBuilder: const FixedColorBuilder(Colors.black),
+              //     strokeWidth: 2,
 
-                  //   ),
-                  //   autoFocus: true,
-                  //   cursor: Cursor(color: Colors.red, enabled: true, width: 1),
-                  //   currentCode: '',
-                  //   onCodeSubmitted: (code) {
-                  //     verifyOTP(code);
-                  //   },
-                  //   codeLength: 6,
-                  //   onCodeChanged: (code) {
-                  //     setState(() {
-                  //       enteredOTP = code!;
-                  //     });
-                  //   },
-                  // ),
-                  Pinput(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsRetrieverApi,
-                    length: 6,
-                    autofocus: isPassword,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.done,
-                    onChanged: (value) {
-                      setState(() {
-                        enteredOTP = value;
-                      });
-                    },
-                    onSubmitted: (pin) {
-                      verifyOTP(pin);
-                    },
-                    defaultPinTheme: PinTheme(
-                        height: 40,
-                        width: 40,
-                        textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.indigo[100],
-                            border: Border.all(color: Colors.blue.withOpacity(0.5), width: 2))),
+              //   ),
+              //   autoFocus: true,
+              //   cursor: Cursor(color: Colors.red, enabled: true, width: 1),
+              //   currentCode: '',
+              //   onCodeSubmitted: (code) {
+              //     verifyOTP(code);
+              //   },
+              //   codeLength: 6,
+              //   onCodeChanged: (code) {
+              //     setState(() {
+              //       enteredOTP = code!;
+              //     });
+              //   },
+              // ),
+              Pinput(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsRetrieverApi,
+                length: 6,
+                autofocus: isPassword,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                onChanged: (value) {
+                  setState(() {
+                    enteredOTP = value;
+                  });
+                },
+                onSubmitted: (pin) {
+                  verifyOTP(pin);
+                },
+                defaultPinTheme: PinTheme(
+                  height: 38,
+                  width: 38,
+                  textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.indigo[100],
+                    border: Border.all(color: Colors.blue.withOpacity(0.5), width: 2),
                   ),
-                ],
-              )),
+                ),
+              ),
+            ],
+          )),
         ],
       ),
     );

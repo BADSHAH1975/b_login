@@ -54,7 +54,15 @@ class _MobileNumberState extends State<MobileNumber> {
             _verificationId = verificationId;
           });
         }
-        Navigator.push(context, MaterialPageRoute(builder: (_) => MobileOtp(otp: _verificationId)));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => MobileOtp(
+              otp: _verificationId,
+              number: phonenumber.text,
+            ),
+          ),
+        );
       },
       codeAutoRetrievalTimeout: (String verificationId) {
         if (mounted) {
