@@ -13,7 +13,7 @@
     </queries>
 <!--android:roundIcon="@mipmap/logo_round"-->
     <application
-        android:label="Taqwa"
+        android:label="TAQWA"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         >
