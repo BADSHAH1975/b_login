@@ -29,18 +29,18 @@ class _ProductSearchItemState extends State<ProductSearchItem> {
           ),
           title: Text(widget.product.name),
         );
-        Container(
-          decoration: BoxDecoration(
-            color: Color(0xFFEFEEEE),
-            borderRadius: BorderRadius.circular(2.0),
-          ),
-          child: CachedNetworkImage(
-            imageUrl: widget.product.imageUrl,
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Container(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
-        );
+        // Container(
+        //   decoration: BoxDecoration(
+        //     color: Color(0xFFEFEEEE),
+        //     borderRadius: BorderRadius.circular(2.0),
+        //   ),
+        //   child: CachedNetworkImage(
+        //     imageUrl: widget.product.imageUrl,
+        //     fit: BoxFit.cover,
+        //     placeholder: (context, url) => Container(),
+        //     errorWidget: (context, url, error) => Icon(Icons.error),
+        //   ),
+        // );
       },
       openBuilder: (BuildContext _, VoidCallback __) {
         return ProductPage(

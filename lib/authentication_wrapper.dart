@@ -13,14 +13,14 @@ class AuthenticationWrapper extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(
-            color: Colors.yellow,
+          return const CircularProgressIndicator(
+            color: Colors.black,
           );
         }
         if (snapshot.hasData && snapshot.data != null) {
-          return Layout();
+          return const Layout();
         } else {
-          return MobileNumber();
+          return const MobileNumber();
         }
       },
     );

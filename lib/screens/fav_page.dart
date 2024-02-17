@@ -1,5 +1,4 @@
 import 'package:b_sell/appcolors.dart';
-import 'package:b_sell/main.dart';
 import 'package:b_sell/models/product.dart';
 import 'package:b_sell/screens/product/product_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -56,7 +55,7 @@ class _FavPageState extends State<FavPage> {
         return fetchProductDetails(productId);
       }).toList();
 
-      await Future.delayed(Duration(milliseconds: 3000));
+      await Future.delayed(const Duration(milliseconds: 3000));
 
       // List<Product> validProductsDetails = [];
       List<Product?> productDetailsList = await Future.wait(productDetailsFutures);
@@ -91,7 +90,7 @@ class _FavPageState extends State<FavPage> {
         List<Future<Product?>> productDetailsFutures = favoriteProductIds.map((productId) {
           return fetchProductDetails(productId);
         }).toList();
-        await Future.delayed(Duration(milliseconds: 1000));
+        await Future.delayed(const Duration(milliseconds: 1000));
 
         // Wait for all futures to complete
         List<Product?> productDetailsList = await Future.wait(productDetailsFutures);
@@ -110,7 +109,7 @@ class _FavPageState extends State<FavPage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
         ),

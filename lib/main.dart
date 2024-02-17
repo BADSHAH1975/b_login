@@ -65,14 +65,12 @@
 
 //---------------------------------------------------------------------------
 import 'package:b_sell/appcolors.dart';
-import 'package:b_sell/bloc/search_bloc.dart';
 import 'package:b_sell/firebase_options.dart';
 import 'package:b_sell/screens/splash_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -85,13 +83,13 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  firestore.settings = Settings(persistenceEnabled: true);
+  firestore.settings = const Settings(persistenceEnabled: true);
   // await hasLocationPermission();
   if (await hasLocationPermission()) {
     runApp(
       DevicePreview(
         enabled: !kReleaseMode,
-        builder: (context) => MyApp(),
+        builder: (context) => const MyApp(),
       ),
     );
   } else {
@@ -181,7 +179,7 @@ class MyApp extends StatelessWidget {
           background: white,
         ),
       ),
-      home: SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }

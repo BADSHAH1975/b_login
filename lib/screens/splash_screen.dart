@@ -15,7 +15,7 @@ class SplashScreen extends StatelessWidget {
         fit: BoxFit.cover,
       ),
       splashIconSize: 150,
-      nextScreen: AuthenticationWrapper(),
+      nextScreen: const AuthenticationWrapper(),
       splashTransition: SplashTransition.scaleTransition,
       duration: 400,
     );

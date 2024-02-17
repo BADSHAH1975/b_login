@@ -1,6 +1,5 @@
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:b_sell/appcolors.dart';
-import 'package:b_sell/main.dart';
 import 'package:b_sell/screens/home_page.dart';
 import 'package:b_sell/screens/fav_page.dart';
 import 'package:b_sell/screens/settings_page.dart';
@@ -80,7 +79,7 @@ class _LayoutState extends State<Layout> {
                   backgroundColor: Colors.black,
                 )
               : null,
-          body: Container(
+          body: SizedBox(
             height: MediaQuery.of(context).size.height,
             child: _pages[_currentIndex],
           ),
@@ -111,7 +110,7 @@ class _LayoutState extends State<Layout> {
                     Icons.home,
                     color: white,
                   ),
-                  activeItem: Icon(
+                  activeItem: const Icon(
                     Icons.home_filled,
                     color: Colors.black,
                   ),
@@ -124,7 +123,7 @@ class _LayoutState extends State<Layout> {
                     Icons.favorite,
                     color: white,
                   ),
-                  activeItem: Icon(
+                  activeItem: const Icon(
                     Icons.favorite,
                     color: Colors.black,
                   ),
@@ -135,7 +134,7 @@ class _LayoutState extends State<Layout> {
                     Icons.settings,
                     color: white,
                   ),
-                  activeItem: Icon(
+                  activeItem: const Icon(
                     Icons.settings,
                     color: Colors.black,
                   ),
@@ -149,19 +148,19 @@ class _LayoutState extends State<Layout> {
     );
   }
 
-  Widget _buildSearchField() {
-    return TextField(
-      autofocus: true,
-      decoration: InputDecoration(
-        hintText: 'Search Products',
-        border: InputBorder.none,
-        hintStyle: TextStyle(color: Colors.black),
-      ),
-      style: TextStyle(color: Colors.black),
-      onChanged: (value) {
-        logger.i(value);
-      },
-      onSubmitted: (value) {},
-    );
-  }
+  // Widget _buildSearchField() {
+  //   return TextField(
+  //     autofocus: true,
+  //     decoration: InputDecoration(
+  //       hintText: 'Search Products',
+  //       border: InputBorder.none,
+  //       hintStyle: TextStyle(color: Colors.black),
+  //     ),
+  //     style: TextStyle(color: Colors.black),
+  //     onChanged: (value) {
+  //       logger.i(value);
+  //     },
+  //     onSubmitted: (value) {},
+  //   );
+  // }
 }

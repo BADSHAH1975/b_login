@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class ProductItem extends StatefulWidget {
   final Product product;
 
-  ProductItem(this.product);
+  const ProductItem(this.product, {super.key});
 
   @override
   State<ProductItem> createState() => _ProductItemState();
@@ -22,14 +22,14 @@ class _ProductItemState extends State<ProductItem> {
       closedBuilder: (BuildContext _, VoidCallback openContainer) {
         return Container(
           decoration: BoxDecoration(
-            color: Color(0xFFEFEEEE),
+            color: const Color(0xFFEFEEEE),
             borderRadius: BorderRadius.circular(2.0),
           ),
           child: CachedNetworkImage(
             imageUrl: widget.product.imageUrl,
             fit: BoxFit.cover,
             placeholder: (context, url) => Container(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
         );
       },

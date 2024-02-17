@@ -11,11 +11,12 @@
             <data android:scheme="tel" />
         </intent>
     </queries>
-
+<!--android:roundIcon="@mipmap/logo_round"-->
     <application
-        android:label="b_login"
+        android:label="Taqwa"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        >
         <activity
             android:name=".MainActivity"
             android:exported="true"

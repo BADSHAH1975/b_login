@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:sms_autofill/sms_autofill.dart';
+// import 'package:sms_autofill/sms_autofill.dart';
 
 class MobileOtp extends StatefulWidget {
   final String otp;
@@ -33,13 +33,13 @@ class _MobileOtpState extends State<MobileOtp> {
   //   super.dispose();
   // }
 
-  void startListeningForSMS() async {
-    try {
-      await SmsAutoFill().listenForCode();
-    } catch (error) {
-      logger.e(error);
-    }
-  }
+  // void startListeningForSMS() async {
+  //   try {
+  //     await SmsAutoFill().listenForCode();
+  //   } catch (error) {
+  //     logger.e(error);
+  //   }
+  // }
 
   Future<void> _saveUserData(User user) async {
     try {
@@ -74,7 +74,7 @@ class _MobileOtpState extends State<MobileOtp> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (_) => Layout(),
+          builder: (_) => const Layout(),
         ),
         (route) => false,
       );
@@ -160,7 +160,7 @@ class _MobileOtpState extends State<MobileOtp> {
                           children: [
                             Text(
                               '+91 ${widget.number}',
-                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
+                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
                             ),
                             Container(
                               margin: const EdgeInsets.only(top: 3),

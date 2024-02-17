@@ -41,17 +41,17 @@ class _ProductPageState extends State<ProductPage> {
     checkProductLikedStatus();
   }
 
-  String _formatDuration(Duration duration) {
-    if (duration.inDays > 0) {
-      return '${duration.inDays} day${duration.inDays > 1 ? 's' : ''}';
-    } else if (duration.inHours > 0) {
-      return '${duration.inHours} hour${duration.inHours > 1 ? 's' : ''}';
-    } else if (duration.inMinutes > 0) {
-      return '${duration.inMinutes} minute${duration.inMinutes > 1 ? 's' : ''}';
-    } else {
-      return 'a moment';
-    }
-  }
+  // String _formatDuration(Duration duration) {
+  //   if (duration.inDays > 0) {
+  //     return '${duration.inDays} day${duration.inDays > 1 ? 's' : ''}';
+  //   } else if (duration.inHours > 0) {
+  //     return '${duration.inHours} hour${duration.inHours > 1 ? 's' : ''}';
+  //   } else if (duration.inMinutes > 0) {
+  //     return '${duration.inMinutes} minute${duration.inMinutes > 1 ? 's' : ''}';
+  //   } else {
+  //     return 'a moment';
+  //   }
+  // }
 
   void toggleSavedStatus(Product product) async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -326,7 +326,7 @@ class _ProductPageState extends State<ProductPage> {
                                 final stringPrice = formatIndianCurrency(exactPrice);
 
                                 return Text(
-                                  '${stringPrice.substring(0, stringPrice.length - 3)}',
+                                  stringPrice.substring(0, stringPrice.length - 3),
                                   textAlign: TextAlign.right,
                                   style: GoogleFonts.poppins(
                                     fontSize: 24,
@@ -519,27 +519,12 @@ class _ProductPageState extends State<ProductPage> {
                               ),
                             ),
                             StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection('products')
-                                  .doc(widget.product.id)
-                                  .collection('shares')
-                                  .snapshots(),
+                              stream:
+                                  FirebaseFirestore.instance.collection('products').doc(widget.product.id).snapshots(),
                               builder: (context, snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Container();
-                                }
-                                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                                  return const Text(
-                                    '0',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  );
-                                }
-                                int length = snapshot.data!.docs.length;
-
+                                int currentShares = snapshot.data?['sharesCount'] ?? 0;
                                 return Text(
-                                  length.toString(),
+                                  currentShares.toString(),
                                   style: const TextStyle(
                                     fontSize: 16,
                                   ),

@@ -3,7 +3,6 @@ import 'package:b_sell/main.dart';
 import 'package:b_sell/screens/login_signup_screens/mobile_number.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:flutter/services.dart';
@@ -106,11 +105,9 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
   List<Marker> markers = [
     Marker(
       point: LatLng(18.47265327007449, 73.88907902298355),
-      builder: (ctx) => Container(
-        child: Icon(
-          Icons.pin_drop,
-          color: Colors.red,
-        ),
+      builder: (ctx) => const Icon(
+        Icons.pin_drop,
+        color: Colors.red,
       ),
     ),
     Marker(
@@ -118,38 +115,30 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
         18.50643436933563,
         73.86255734012946,
       ),
-      builder: (ctx) => Container(
-        child: Icon(
-          Icons.pin_drop,
-          color: Colors.red,
-        ),
+      builder: (ctx) => const Icon(
+        Icons.pin_drop,
+        color: Colors.red,
       ),
     ),
     Marker(
       point: LatLng(18.988309102943454, 73.10575348655921),
-      builder: (ctx) => Container(
-        child: Icon(
-          Icons.pin_drop,
-          color: Colors.red,
-        ),
+      builder: (ctx) => const Icon(
+        Icons.pin_drop,
+        color: Colors.red,
       ),
     ),
     Marker(
       point: LatLng(19.169634240208627, 73.02514370005068),
-      builder: (ctx) => Container(
-        child: Icon(
-          Icons.pin_drop,
-          color: Colors.red,
-        ),
+      builder: (ctx) => const Icon(
+        Icons.pin_drop,
+        color: Colors.red,
       ),
     ),
     Marker(
       point: LatLng(19.205140442086307, 72.983313300041),
-      builder: (ctx) => Container(
-        child: Icon(
-          Icons.pin_drop,
-          color: Colors.red,
-        ),
+      builder: (ctx) => const Icon(
+        Icons.pin_drop,
+        color: Colors.red,
       ),
     ),
     Marker(
@@ -340,19 +329,19 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
     super.initState();
     _findNearestStore();
 
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 0),
-    );
+    // _controller = AnimationController(
+    //   vsync: this,
+    //   duration: Duration(seconds: 0),
+    // );
 
-    _animation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(_controller);
+    // _animation = Tween<double>(
+    //   begin: 0.0,
+    //   end: 1.0,
+    // ).animate(_controller);
 
-    Future.delayed(Duration(milliseconds: 0), () {
-      _controller.forward();
-    });
+    // Future.delayed(Duration(milliseconds: 0), () {
+    //   _controller.forward();
+    // });
   }
 
   @override
@@ -373,21 +362,21 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
     }
   }
 
-  Future<void> _launchfb() async {
-    if (!await launchUrl(Uri.parse('https://facebook.com'))) {
-      throw Exception('Could not launch ${Uri.parse('https://facebook.com')}');
-    } else {
-      await launchUrl(Uri.parse('https://facebook.com'));
-    }
-  }
+  // Future<void> _launchfb() async {
+  //   if (!await launchUrl(Uri.parse('https://facebook.com'))) {
+  //     throw Exception('Could not launch ${Uri.parse('https://facebook.com')}');
+  //   } else {
+  //     await launchUrl(Uri.parse('https://facebook.com'));
+  //   }
+  // }
 
   Future<void> _launchCall(String number) async {
     // const phoneNumber = '+917777096028';
-    final Uri _phoneLaunchUri = Uri(scheme: 'tel', path: '+91$number');
-    if (!await launchUrl(_phoneLaunchUri)) {
+    final Uri phoneLaunchUri = Uri(scheme: 'tel', path: '+91$number');
+    if (!await launchUrl(phoneLaunchUri)) {
       throw Exception('Need Permission');
     } else {
-      launchUrl(_phoneLaunchUri);
+      launchUrl(phoneLaunchUri);
     }
   }
 
@@ -396,7 +385,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
       await FirebaseAuth.instance.signOut();
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => MobileNumber()),
+        MaterialPageRoute(builder: (context) => const MobileNumber()),
         (route) => false,
       );
     } catch (e) {
@@ -410,7 +399,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
     return Container(
       // color: secondCont,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
         ),
@@ -433,7 +422,7 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                   ListTile(
                     leading: Icon(
                       Icons.call,
-                      color: cont,
+                      color: black,
                     ),
                     title: Container(
                       // width: 100,
@@ -442,19 +431,19 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                         boxShadow: [
                           BoxShadow(
                             color: secondCont.withOpacity(0.8),
-                            offset: Offset(-6.0, -6.0),
+                            offset: const Offset(-6.0, -6.0),
                             blurRadius: 20.0,
                           ),
                           BoxShadow(
                             color: cont.withOpacity(0.3),
-                            offset: Offset(6.0, 6.0),
+                            offset: const Offset(6.0, 6.0),
                             blurRadius: 20.0,
                           ),
                         ],
-                        color: Color(0xFFEFEEEE),
+                        color: const Color(0xFFEFEEEE),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(nearestStorePhone),
@@ -466,8 +455,8 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                   ),
                   ListTile(
                     leading: Icon(
-                      Icons.storefront,
-                      color: cont,
+                      Icons.location_on,
+                      color: black,
                     ),
                     title: Container(
                       // width: 100,
@@ -476,19 +465,19 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                         boxShadow: [
                           BoxShadow(
                             color: secondCont.withOpacity(0.8),
-                            offset: Offset(-6.0, -6.0),
+                            offset: const Offset(-6.0, -6.0),
                             blurRadius: 20.0,
                           ),
                           BoxShadow(
                             color: cont.withOpacity(0.3),
-                            offset: Offset(6.0, 6.0),
+                            offset: const Offset(6.0, 6.0),
                             blurRadius: 20.0,
                           ),
                         ],
-                        color: Color(0xFFEFEEEE),
+                        color: const Color(0xFFEFEEEE),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(nearestStoreName),
@@ -498,93 +487,99 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                       openGoogleMaps(nearestLat, nearestLong);
                     },
                   ),
-                  ListTile(
-                    title: Container(
-                      // width: 100,
-                      height: 300,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: secondCont.withOpacity(0.8),
-                            offset: Offset(-6.0, -6.0),
-                            blurRadius: 20.0,
-                          ),
-                          BoxShadow(
-                            color: cont.withOpacity(0.3),
-                            offset: Offset(6.0, 6.0),
-                            blurRadius: 20.0,
-                          ),
-                        ],
-                        color: Color(0xFFEFEEEE),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                      child: FlutterMap(
-                        options: MapOptions(
-                          //                         'latitude': 18.988309102943454,
-                          // 'longitude': 73.10575348655921,
-                          center: LatLng(18.9883091029435, 73.10575348655921),
-                          zoom: 8,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: ListTile(
+                      title: Container(
+                        // width: 100,
+                        height: 300,
+
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: secondCont.withOpacity(0.8),
+                              offset: const Offset(-6.0, -6.0),
+                              blurRadius: 20.0,
+                            ),
+                            BoxShadow(
+                              color: cont.withOpacity(0.3),
+                              offset: const Offset(6.0, 6.0),
+                              blurRadius: 20.0,
+                            ),
+                          ],
+                          color: const Color(0xFFEFEEEE),
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
-                        children: [
-                          TileLayer(
-                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            userAgentPackageName: 'com.example.app',
+                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
+                        child: FlutterMap(
+                          options: MapOptions(
+                            //                         'latitude': 18.988309102943454,
+                            // 'longitude': 73.10575348655921,
+                            center: LatLng(18.9883091029435, 73.10575348655921),
+                            // center: LatLng(nearestLat, nearestLong),
+                            zoom: 8,
+                            enableScrollWheel: false,
                           ),
-                          RichAttributionWidget(
-                            attributions: [
-                              TextSourceAttribution(
-                                'OpenStreetMap contributors',
-                                // onTap: () => openGoogleMaps(),
-                              ),
-                            ],
-                          ),
-                          MarkerLayer(
-                            markers: markers,
-                          ),
-                        ],
+                          children: [
+                            TileLayer(
+                              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              userAgentPackageName: 'com.example.app',
+                            ),
+                            const RichAttributionWidget(
+                              attributions: [
+                                TextSourceAttribution(
+                                  'OpenStreetMap contributors',
+                                  // onTap: () => openGoogleMaps(),
+                                ),
+                              ],
+                            ),
+                            MarkerLayer(
+                              markers: markers,
+                            ),
+                          ],
+                        ),
+                        // Align(
+                        //   alignment: Alignment.centerLeft,
+                        //   child: Text('Map'),
+                        // ),
                       ),
-                      // Align(
-                      //   alignment: Alignment.centerLeft,
-                      //   child: Text('Map'),
-                      // ),
+                      onTap: () {},
                     ),
-                    onTap: () {},
                   ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.facebook,
-                      color: cont,
-                    ),
-                    title: Container(
-                      // width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: secondCont.withOpacity(0.8),
-                            offset: Offset(-6.0, -6.0),
-                            blurRadius: 20.0,
-                          ),
-                          BoxShadow(
-                            color: cont.withOpacity(0.3),
-                            offset: Offset(6.0, 6.0),
-                            blurRadius: 20.0,
-                          ),
-                        ],
-                        color: Color(0xFFEFEEEE),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text('Our Facebook!'),
-                      ),
-                    ),
-                    onTap: () {
-                      _launchfb();
-                    },
-                  ),
+                  // ListTile(
+                  //   leading: Icon(
+                  //     Icons.facebook,
+                  //     color: cont,
+                  //   ),
+                  //   title: Container(
+                  //     // width: 100,
+                  //     height: 50,
+                  //     decoration: BoxDecoration(
+                  //       boxShadow: [
+                  //         BoxShadow(
+                  //           color: secondCont.withOpacity(0.8),
+                  //           offset: Offset(-6.0, -6.0),
+                  //           blurRadius: 20.0,
+                  //         ),
+                  //         BoxShadow(
+                  //           color: cont.withOpacity(0.3),
+                  //           offset: Offset(6.0, 6.0),
+                  //           blurRadius: 20.0,
+                  //         ),
+                  //       ],
+                  //       color: Color(0xFFEFEEEE),
+                  //       borderRadius: BorderRadius.circular(12.0),
+                  //     ),
+                  //     padding: EdgeInsets.symmetric(horizontal: 15),
+                  //     child: Align(
+                  //       alignment: Alignment.centerLeft,
+                  //       child: Text('Our Facebook!'),
+                  //     ),
+                  //   ),
+                  //   onTap: () {
+                  //     _launchfb();
+                  //   },
+                  // ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 100.0, vertical: 24),
                     child: GestureDetector(
@@ -592,9 +587,9 @@ class _SettingsPageState extends State<SettingsPage> with SingleTickerProviderSt
                         _signOut(context);
                       },
                       child: Container(
-                        height: 50,
+                        height: 45,
                         // width: MediaQuery.of(context).size.width * 0.3,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.black,
                         ),
                         child: Center(
